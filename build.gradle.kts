@@ -81,6 +81,7 @@ publishing {
         val user = System.getenv("OSSRH_USERNAME")
         val pass = System.getenv("OSSRH_PASSWORD")
         if (user != null && pass != null) {
+            println("Publishing...")
             maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2") {
                 name = "Central"
                 credentials {
@@ -94,6 +95,3 @@ publishing {
 
 }
 
-signing {
-    sign(publishing.publications)
-}
