@@ -5,7 +5,6 @@ import dev.isxander.settxi.Setting
 
 interface ConfigProcessor {
     val settings: MutableList<Setting<*>>
-    var conf: Config
 
     fun addSettingToConfig(setting: Setting<*>, data: Config): Config {
         var key = "${setting.category}."

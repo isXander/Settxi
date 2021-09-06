@@ -1,0 +1,21 @@
+name: Publish to maven
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
+          distribution: adopt
+      - name: Grant execute permission to gradle
+        run: chmod +x gradlew
+      - name: Publish
+        run: ./gradlew publish
