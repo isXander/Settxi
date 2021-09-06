@@ -1,2 +1,2 @@
 # `Settxi`
-*Annotations-based settings library.*
+*Delegates-based settings library.*

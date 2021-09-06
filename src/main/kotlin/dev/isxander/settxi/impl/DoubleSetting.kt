@@ -1,26 +1,35 @@
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.providers.IValueProvider
-import dev.isxander.settxi.utils.DataTypes
+import dev.isxander.settxi.SettingAdapter
+import dev.isxander.settxi.serialization.ConfigProcessor
 
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
-@MustBeDocumented
-annotation class DoubleSetting(val name: String, val category: String, val subcategory: String = "", val description: String, val min: Double, val max: Double, val suffix: String = "", val save: Boolean = true)
-
-class DoubleSettingWrapped(annotation: DoubleSetting, provider: IValueProvider<Double>) : Setting<Double, DoubleSetting>(annotation, provider) {
-    override val name: String = annotation.name
-    override val category: String = annotation.category
-    override val subcategory: String = annotation.subcategory
-    override val description: String = annotation.description
-    override val shouldSave: Boolean = annotation.save
-
+class DoubleSetting internal constructor(
+    default: Double,
+    override val name: String,
+    override val category: String,
+    override val subcategory: String? = null,
+    override val description: String,
+    override val shouldSave: Boolean = true,
+    lambda: SettingAdapter<Double>.() -> Unit = {},
+) : Setting<Double>(default, lambda) {
     override var serializedValue: Any
         get() = value
         set(new) { value = new as Double }
 
     override val defaultSerializedValue: Double = default
+}
 
-    override val dataType: DataTypes = DataTypes.Double
-
+fun ConfigProcessor.double(
+    default: Double,
+    name: String,
+    category: String,
+    subcategory: String? = null,
+    description: String,
+    shouldSave: Boolean = true,
+    lambda: SettingAdapter<Double>.() -> Unit = {},
+): DoubleSetting {
+    val setting = DoubleSetting(default, name, category, subcategory, description, shouldSave, lambda)
+    this.settings.add(setting)
+    return setting
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     // Build
     kotlin("jvm") version "1.5.30"
@@ -14,8 +16,16 @@ java {
     withJavadocJar()
 }
 
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions.jvmTarget = "1.8"
+
 group = "dev.isxander"
-version = "1.0"
+version = System.getenv("GITHUB_RUN_NUMBER") ?: "local"
+
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+}
 
 dependencies {
     api("com.electronwill.night-config:core:3.6.4")
@@ -69,20 +79,18 @@ publishing {
     }
 
     repositories {
-        maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2") {
-            name = "Central"
-            credentials {
-                username = property("ossrh.username") as String
-                password = property("ossrh.password") as String
+        val user = findProperty("ossrh.username") as? String?
+        val pass = findProperty("ossrh.password") as? String?
+        if (user != null && pass != null) {
+            maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2") {
+                name = "Central"
+                credentials {
+                    username = user
+                    password = pass
+                }
             }
         }
-        maven("https://maven.pkg.github.com/isxander/settxi") {
-            name = "GitHub"
-            credentials {
-                username = property("gpr.user") as String
-                password = property("gpr.key") as String
-            }
-        }
+
     }
 
 }

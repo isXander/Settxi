@@ -17,10 +17,10 @@
 
 package dev.isxander.settxi
 
-class SettingAdapter<T> (var value: T, lambda: SettingAdapter<T>.() -> Unit = {}) {
-    private var getter: (T) -> T = { it }
-    private var setter: (T) -> T = { it }
-    private var depends: MutableList<(T) -> Boolean> = mutableListOf()
+abstract class SettingAdapter<T> protected constructor(lambda: SettingAdapter<T>.() -> Unit = {}) {
+    protected var getter: (T) -> T = { it }
+    protected var setter: (T) -> T = { it }
+    protected var depends: MutableList<(T) -> Boolean> = mutableListOf()
 
     init {
         this.apply(lambda)
@@ -29,12 +29,4 @@ class SettingAdapter<T> (var value: T, lambda: SettingAdapter<T>.() -> Unit = {}
     fun get(lambda: (T) -> T) { getter = lambda }
     fun set(lambda: (T) -> T) { setter = lambda }
     fun depends(lambda: (T) -> Boolean) = depends.add(lambda)
-
-    fun get(): T = getter(value)
-    fun set(new: T) {
-        value = setter(new)
-    }
-
-    val hidden: Boolean
-        get() = !depends.all { it(value) }
 }

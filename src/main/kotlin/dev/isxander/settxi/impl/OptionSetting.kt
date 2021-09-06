@@ -1,36 +1,18 @@
-/*
- | EvergreenHUD - A mod to improve on your heads-up-display.
- | Copyright (C) isXander [2019 - 2021]
- |
- | This program comes with ABSOLUTELY NO WARRANTY
- | This is free software, and you are welcome to redistribute it
- | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/lgpl-3.0.en.html
- |
- | If you have any questions or concerns, please create
- | an issue on the github page that can be found here
- | https://github.com/isXander/EvergreenHUD
- |
- | If you have a private concern, please contact
- | isXander @ business.isxander@gmail.com
- */
-
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.providers.IValueProvider
-import dev.isxander.settxi.utils.DataTypes
+import dev.isxander.settxi.SettingAdapter
+import dev.isxander.settxi.serialization.ConfigProcessor
 
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
-@MustBeDocumented
-annotation class OptionSetting(val name: String, val category: String, val subcategory: String = "", val description: String, val save: Boolean = true)
-
-class OptionSettingWrapped(annotation: OptionSetting, provider: IValueProvider<OptionContainer.Option>) : Setting<OptionContainer.Option, OptionSetting>(annotation, provider) {
-    override val name: String = annotation.name
-    override val category: String = annotation.category
-    override val subcategory: String = annotation.subcategory
-    override val description: String = annotation.description
-    override val shouldSave: Boolean = annotation.save
+class OptionSetting internal constructor(
+    default: OptionContainer.Option,
+    override val name: String,
+    override val category: String,
+    override val subcategory: String? = null,
+    override val description: String,
+    override val shouldSave: Boolean = true,
+    lambda: SettingAdapter<OptionContainer.Option>.() -> Unit = {},
+) : Setting<OptionContainer.Option>(default, lambda) {
     val options = value.values
 
     override var serializedValue: Any
@@ -38,8 +20,20 @@ class OptionSettingWrapped(annotation: OptionSetting, provider: IValueProvider<O
         set(new) { value = options.find { it.id == new as String }!! }
 
     override val defaultSerializedValue: String = default.id
+}
 
-    override val dataType: DataTypes = DataTypes.String
+fun ConfigProcessor.option(
+    default: OptionContainer.Option,
+    name: String,
+    category: String,
+    subcategory: String? = null,
+    description: String,
+    shouldSave: Boolean = true,
+    lambda: SettingAdapter<OptionContainer.Option>.() -> Unit = {},
+): OptionSetting {
+    val setting = OptionSetting(default, name, category, subcategory, description, shouldSave, lambda)
+    this.settings.add(setting)
+    return setting
 }
 
 abstract class OptionContainer {

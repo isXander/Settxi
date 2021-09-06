@@ -17,23 +17,24 @@
 
 package dev.isxander.settxi
 
-import dev.isxander.settxi.impl.*
-import dev.isxander.settxi.providers.IValueProvider
-import dev.isxander.settxi.utils.DataTypes
-import kotlin.reflect.KClass
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-abstract class Setting<T, A>(val annotation: A, private val provider: IValueProvider<T>, val hidden: Boolean = false) : IValueProvider<T> {
+abstract class Setting<T>(val default: T, lambda: SettingAdapter<T>.() -> Unit = {}) : SettingAdapter<T>(lambda), ReadWriteProperty<Any, T> {
     abstract val name: String
     abstract val category: String
-    abstract val subcategory: String
+    abstract val subcategory: String?
     abstract val description: String
     abstract val shouldSave: Boolean
 
-    override var value: T
-        get() = provider.value
-        set(value) { provider.value = value }
+    protected var value: T = default
 
-    val default = provider.value
+    override fun getValue(thisRef: Any, property: KProperty<*>): T {
+        return getter(value)
+    }
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+        this.value = setter(value)
+    }
 
     abstract var serializedValue: Any
     abstract val defaultSerializedValue: Any
@@ -43,23 +44,15 @@ abstract class Setting<T, A>(val annotation: A, private val provider: IValueProv
             .replace(Regex("[^\\w]+"), "_")
             .trim { it == '_' || it.isWhitespace() }
     }
+    val nameSerializedCategoryAndKey: String by lazy {
+        "$category.${if (subcategory != null) "$subcategory." else ""}$nameSerializedKey"
+    }
 
-    abstract val dataType: DataTypes
+    val hidden: Boolean
+        get() = !depends.all { it(value) }
 
     fun reset() {
         value = default
-    }
-
-    companion object {
-        val registeredSettings = mapOf<KClass<out Annotation>, KClass<out Setting<*, *>>>(
-            BooleanSetting::class to BooleanSettingWrapped::class,
-            ColorSetting::class to ColorSettingWrapped::class,
-            OptionSetting::class to OptionSettingWrapped::class,
-            FloatSetting::class to FloatSettingWrapped::class,
-            IntSetting::class to IntSettingWrapped::class,
-            StringListSetting::class to StringListSettingWrapped::class,
-            StringSetting::class to StringSettingWrapped::class
-        )
     }
 }
 
