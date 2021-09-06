@@ -10,9 +10,16 @@ class DoubleSetting internal constructor(
     override val category: String,
     override val subcategory: String? = null,
     override val description: String,
+    val min: Double,
+    val max: Double,
     override val shouldSave: Boolean = true,
     lambda: SettingAdapter<Double>.() -> Unit = {},
 ) : Setting<Double>(default, lambda) {
+    override var value: Double = default
+        set(value) {
+            field = value.coerceIn(min..max)
+        }
+
     override var serializedValue: Any
         get() = value
         set(new) { value = new as Double }
@@ -26,10 +33,12 @@ fun ConfigProcessor.double(
     category: String,
     subcategory: String? = null,
     description: String,
+    min: Double,
+    max: Double,
     shouldSave: Boolean = true,
     lambda: SettingAdapter<Double>.() -> Unit = {},
 ): DoubleSetting {
-    val setting = DoubleSetting(default, name, category, subcategory, description, shouldSave, lambda)
+    val setting = DoubleSetting(default, name, category, subcategory, description, min, max, shouldSave, lambda)
     this.settings.add(setting)
     return setting
 }

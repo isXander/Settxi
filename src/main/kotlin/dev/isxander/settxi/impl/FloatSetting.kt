@@ -10,9 +10,16 @@ class FloatSetting internal constructor(
     override val category: String,
     override val subcategory: String? = null,
     override val description: String,
+    val min: Float,
+    val max: Float,
     override val shouldSave: Boolean = true,
     lambda: SettingAdapter<Float>.() -> Unit = {},
 ) : Setting<Float>(default, lambda) {
+    override var value: Float = default
+        set(value) {
+            field = value.coerceIn(min..max)
+        }
+
     override var serializedValue: Any
         get() = value
         set(new) { value = new as Float }
@@ -26,10 +33,12 @@ fun ConfigProcessor.float(
     category: String,
     subcategory: String? = null,
     description: String,
+    min: Float,
+    max: Float,
     shouldSave: Boolean = true,
     lambda: SettingAdapter<Float>.() -> Unit = {},
 ): FloatSetting {
-    val setting = FloatSetting(default, name, category, subcategory, description, shouldSave, lambda)
+    val setting = FloatSetting(default, name, category, subcategory, description, min, max, shouldSave, lambda)
     this.settings.add(setting)
     return setting
 }
