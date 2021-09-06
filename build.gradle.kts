@@ -78,8 +78,8 @@ publishing {
     }
 
     repositories {
-        val user = findProperty("ossrh.username") as? String?
-        val pass = findProperty("ossrh.password") as? String?
+        val user = System.getenv("OSSRH_USERNAME")
+        val pass = System.getenv("OSSRH_PASSWORD")
         if (user != null && pass != null) {
             maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2") {
                 name = "Central"
