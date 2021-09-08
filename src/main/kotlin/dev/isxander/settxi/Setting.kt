@@ -12,12 +12,11 @@ abstract class Setting<T>(val default: T, lambda: SettingAdapter<T>.() -> Unit =
 
     protected open var value: T = default
 
-    override fun getValue(thisRef: Any, property: KProperty<*>): T {
-        return getter(value)
-    }
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
-        this.value = setter(value)
-    }
+    fun get() = getter(value)
+    fun set(value: T) { this.value = setter(value) }
+
+    override fun getValue(thisRef: Any, property: KProperty<*>): T = get()
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = set(value)
 
     abstract var serializedValue: Any
     abstract val defaultSerializedValue: Any
