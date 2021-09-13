@@ -22,7 +22,7 @@ class FloatSetting internal constructor(
 
     override var serializedValue: Any
         get() = value
-        set(new) { value = new as Float }
+        set(new) { value = (new as Number).toFloat() }
 
     override val defaultSerializedValue: Float = default
 }

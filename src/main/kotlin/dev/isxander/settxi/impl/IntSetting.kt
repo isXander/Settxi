@@ -22,7 +22,7 @@ class IntSetting internal constructor(
 
     override var serializedValue: Any
         get() = value
-        set(new) { value = new as Int }
+        set(new) { value = (new as Number).toInt() }
 
     override val defaultSerializedValue: Int = default
 }

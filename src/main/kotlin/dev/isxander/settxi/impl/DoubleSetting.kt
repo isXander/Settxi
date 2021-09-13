@@ -22,7 +22,7 @@ class DoubleSetting internal constructor(
 
     override var serializedValue: Any
         get() = value
-        set(new) { value = new as Double }
+        set(new) { value = (new as Number).toDouble() }
 
     override val defaultSerializedValue: Double = default
 }
