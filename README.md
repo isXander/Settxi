@@ -5,7 +5,7 @@
 class MyClass : ConfigProcessor {
     override val settings: MutableList<Setting<*>> = mutableListOf()
     
-    val myColor by color(
+    var myColor by color(
         default = Color(255, 255, 255),
         name = "My Awesome Color",
         description = "An example color for Settxi.",
