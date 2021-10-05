@@ -12,8 +12,14 @@ abstract class Setting<T>(val default: T, lambda: SettingAdapter<T>.() -> Unit =
 
     protected open var value: T = default
 
-    fun get() = getter(value)
-    fun set(value: T) { this.value = setter(value) }
+    fun get(useListener: Boolean = true): T {
+        return if (useListener) getter(this.value)
+            else this.value
+    }
+    fun set(value: T, useListener: Boolean = true) {
+        if (useListener) this.value = setter(value)
+        else this.value = value
+    }
 
     override fun getValue(thisRef: Any, property: KProperty<*>): T = get()
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = set(value)
