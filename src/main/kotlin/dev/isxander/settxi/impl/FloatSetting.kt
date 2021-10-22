@@ -1,7 +1,6 @@
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.SettingAdapter
 import dev.isxander.settxi.serialization.ConfigProcessor
 
 class FloatSetting internal constructor(

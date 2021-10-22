@@ -3,7 +3,8 @@ package dev.isxander.settxi
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Setting<T>(val default: T, lambda: SettingAdapter<T>.() -> Unit = {}) : SettingAdapter<T>(lambda), ReadWriteProperty<Any, T> {
+abstract class Setting<T> : ReadWriteProperty<Any, T> {
+    abstract val default: T
     abstract val name: String
     abstract val category: String
     abstract val subcategory: String?
@@ -42,6 +43,14 @@ abstract class Setting<T>(val default: T, lambda: SettingAdapter<T>.() -> Unit =
     fun reset() {
         value = default
     }
+
+    protected var getter: (T) -> T = { it }
+    protected var setter: (T) -> T = { it }
+    protected var depends: MutableList<(T) -> Boolean> = mutableListOf()
+
+    fun get(lambda: (T) -> T) { getter = lambda }
+    fun set(lambda: (T) -> T) { setter = lambda }
+    fun depends(lambda: (T) -> Boolean) = depends.add(lambda)
 }
 
 
