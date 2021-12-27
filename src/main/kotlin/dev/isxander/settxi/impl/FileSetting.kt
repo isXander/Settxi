@@ -5,29 +5,29 @@ import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
+import java.io.File
 
-class StringSetting internal constructor(
-    default: String,
-    lambda: StringSetting.() -> Unit = {},
-) : Setting<String>(default) {
+class FileSetting internal constructor(
+    default: File,
+    lambda: FileSetting.() -> Unit = {},
+) : Setting<File>(default) {
     override lateinit var name: String
     override lateinit var category: String
     override lateinit var description: String
     override var shouldSave: Boolean = true
 
     override var serializedValue: JsonElement
-        get() = JsonPrimitive(value)
-        set(new) { value = new.jsonPrimitive.content }
+        get() = JsonPrimitive(value.path)
+        set(new) { value = File(new.jsonPrimitive.content) }
 
-    override val defaultSerializedValue: JsonElement = JsonPrimitive(default)
+    override val defaultSerializedValue: JsonElement = JsonPrimitive(default.path)
 
     init {
         this.apply(lambda)
     }
 }
 
-@JvmName("stringSetting")
-fun ConfigProcessor.string(default: String, lambda: StringSetting.() -> Unit): StringSetting {
-    return StringSetting(default, lambda).also { settings.add(it) }
+@JvmName("fileSetting")
+fun ConfigProcessor.file(default: File, lambda: FileSetting.() -> Unit): FileSetting {
+    return FileSetting(default, lambda).also { settings.add(it) }
 }
-

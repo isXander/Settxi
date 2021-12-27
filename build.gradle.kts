@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // Build
-    kotlin("jvm") version "1.5.30"
+    kotlin("jvm") version "1.6.0"
+    kotlin("plugin.serialization") version "1.6.0"
     `java-library`
 
     // Publishing
-    id("org.jetbrains.dokka") version "1.5.0"
     `maven-publish`
     signing
 }
@@ -28,7 +28,9 @@ repositories {
 }
 
 dependencies {
-    api("com.electronwill.night-config:core:3.6.4")
+    api(kotlin("stdlib-jdk8"))
+    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.1")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 }
 
 val jarTask = tasks.named("jar").get()
@@ -91,6 +93,7 @@ publishing {
             }
         }
 
+        mavenLocal()
     }
 
 }

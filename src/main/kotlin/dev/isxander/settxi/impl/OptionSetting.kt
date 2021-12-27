@@ -2,37 +2,35 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.serialization.ConfigProcessor
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonPrimitive
 
 class OptionSetting internal constructor(
     default: OptionContainer.Option,
-    override val name: String,
-    override val category: String,
-    override val subcategory: String? = null,
-    override val description: String,
-    override val shouldSave: Boolean = true,
-    lambda: SettingAdapter<OptionContainer.Option>.() -> Unit = {},
-) : Setting<OptionContainer.Option>(default, lambda) {
+    lambda: OptionSetting.() -> Unit = {},
+) : Setting<OptionContainer.Option>(default) {
+    override lateinit var name: String
+    override lateinit var category: String
+    override lateinit var description: String
+    override var shouldSave: Boolean = true
+
     val options = value.values
 
-    override var serializedValue: Any
-        get() = value.id
-        set(new) { value = options.find { it.id == new as String }!! }
+    override var serializedValue: JsonElement
+        get() = JsonPrimitive(value.id)
+        set(new) { value = options.find { it.id == new.jsonPrimitive.content }!! }
 
-    override val defaultSerializedValue: String = default.id
+    override val defaultSerializedValue: JsonPrimitive = JsonPrimitive(default.id)
+
+    init {
+        this.apply(lambda)
+    }
 }
 
-fun ConfigProcessor.option(
-    default: OptionContainer.Option,
-    name: String,
-    category: String,
-    subcategory: String? = null,
-    description: String,
-    shouldSave: Boolean = true,
-    lambda: SettingAdapter<OptionContainer.Option>.() -> Unit = {},
-): OptionSetting {
-    val setting = OptionSetting(default, name, category, subcategory, description, shouldSave, lambda)
-    this.settings.add(setting)
-    return setting
+@JvmName("optionSetting")
+fun ConfigProcessor.option(default: OptionContainer.Option, lambda: OptionSetting.() -> Unit): OptionSetting {
+    return OptionSetting(default, lambda).also { settings.add(it) }
 }
 
 abstract class OptionContainer {

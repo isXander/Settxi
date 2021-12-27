@@ -2,36 +2,33 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.serialization.ConfigProcessor
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 import java.awt.Color
 
 class ColorSetting internal constructor(
     default: Color,
-    override val name: String,
-    override val category: String,
-    override val subcategory: String? = null,
-    override val description: String,
-    val allowTransparency: Boolean = true,
-    override val shouldSave: Boolean = true,
-    lambda: SettingAdapter<Color>.() -> Unit = {},
-) : Setting<Color>(default, lambda) {
-    override var serializedValue: Any
-        get() = value.rgb
-        set(new) { value = Color(new as Int) }
+    lambda: ColorSetting.() -> Unit = {},
+) : Setting<Color>(default) {
+    override lateinit var name: String
+    override lateinit var category: String
+    override lateinit var description: String
+    override var shouldSave: Boolean = true
 
-    override val defaultSerializedValue: Int = default.rgb
+    override var serializedValue: JsonElement
+        get() = JsonPrimitive(value.rgb)
+        set(new) { value = Color(new.jsonPrimitive.int) }
+
+    override val defaultSerializedValue: JsonElement = JsonPrimitive(default.rgb)
+
+    init {
+        this.apply(lambda)
+    }
 }
 
-fun ConfigProcessor.color(
-    default: Color,
-    name: String,
-    category: String,
-    subcategory: String? = null,
-    description: String,
-    allowTransparency: Boolean = true,
-    shouldSave: Boolean = true,
-    lambda: SettingAdapter<Color>.() -> Unit = {},
-): ColorSetting {
-    val setting = ColorSetting(default, name, category, subcategory, description, allowTransparency, shouldSave, lambda)
-    this.settings.add(setting)
-    return setting
+@JvmName("colorSetting")
+fun ConfigProcessor.color(default: Color, lambda: ColorSetting.() -> Unit): ColorSetting {
+    return ColorSetting(default, lambda).also { settings.add(it) }
 }

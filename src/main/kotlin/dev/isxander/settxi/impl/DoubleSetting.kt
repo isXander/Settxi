@@ -2,42 +2,38 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.serialization.ConfigProcessor
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.double
+import kotlinx.serialization.json.jsonPrimitive
 
 class DoubleSetting internal constructor(
     default: Double,
-    override val name: String,
-    override val category: String,
-    override val subcategory: String? = null,
-    override val description: String,
-    val min: Double,
-    val max: Double,
-    override val shouldSave: Boolean = true,
-    lambda: SettingAdapter<Double>.() -> Unit = {},
-) : Setting<Double>(default, lambda) {
+    lambda: DoubleSetting.() -> Unit = {},
+) : Setting<Double>(default) {
+    override lateinit var name: String
+    override lateinit var category: String
+    override lateinit var description: String
+    lateinit var range: ClosedFloatingPointRange<Double>
+    override var shouldSave: Boolean = true
+
     override var value: Double = default
         set(value) {
-            field = value.coerceIn(min..max)
+            field = value.coerceIn(range)
         }
 
-    override var serializedValue: Any
-        get() = value
-        set(new) { value = (new as Number).toDouble() }
+    override var serializedValue: JsonElement
+        get() = JsonPrimitive(value)
+        set(new) { value = new.jsonPrimitive.double }
 
-    override val defaultSerializedValue: Double = default
+    override val defaultSerializedValue: JsonElement = JsonPrimitive(default)
+
+    init {
+        this.apply(lambda)
+    }
 }
 
-fun ConfigProcessor.double(
-    default: Double,
-    name: String,
-    category: String,
-    subcategory: String? = null,
-    description: String,
-    min: Double,
-    max: Double,
-    shouldSave: Boolean = true,
-    lambda: SettingAdapter<Double>.() -> Unit = {},
-): DoubleSetting {
-    val setting = DoubleSetting(default, name, category, subcategory, description, min, max, shouldSave, lambda)
-    this.settings.add(setting)
-    return setting
+@JvmName("doubleSetting")
+fun ConfigProcessor.double(default: Double, lambda: DoubleSetting.() -> Unit): DoubleSetting {
+    return DoubleSetting(default, lambda).also { settings.add(it) }
 }
