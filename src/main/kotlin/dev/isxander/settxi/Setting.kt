@@ -26,12 +26,9 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
 
     abstract var serializedValue: JsonElement
     abstract val defaultSerializedValue: JsonElement
-    val nameSerializedKey: String by lazy {
-        name
-            .lowercase()
-            .replace(Regex("[^\\w]+"), "_")
-            .trim { it == '_' || it.isWhitespace() }
-    }
+
+    val nameSerializedKey: String by lazy { name.toJsonKey() }
+    val categorySerializedKey: String by lazy { category.toJsonKey() }
 
     val hidden: Boolean
         get() = !depends.all { it(value) }
@@ -47,6 +44,12 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     fun get(lambda: (T) -> T) { getter = lambda }
     fun set(lambda: (T) -> T) { setter = lambda }
     fun depends(lambda: (T) -> Boolean) = depends.add(lambda)
+
+    private fun String.toJsonKey() =
+        this
+            .lowercase()
+            .replace(Regex("[^\\w]+"), "_")
+            .trim { it == '_' || it.isWhitespace() }
 }
 
 

@@ -10,7 +10,7 @@ fun List<Setting<*>>.asJson(): JsonObject {
     for (setting in this) {
         if (!setting.shouldSave) continue
 
-        val category = settings.computeIfAbsent(setting.category) { mutableMapOf() }
+        val category = settings.computeIfAbsent(setting.categorySerializedKey) { mutableMapOf() }
         category[setting.nameSerializedKey] = setting.serializedValue
     }
 
@@ -21,7 +21,7 @@ fun List<Setting<*>>.populateFromJson(json: JsonObject) {
     for (setting in this) {
         if (!setting.shouldSave) continue
 
-        val category = json[setting.category]!!.jsonObject
+        val category = json[setting.categorySerializedKey]!!.jsonObject
         setting.serializedValue = category[setting.nameSerializedKey] ?: setting.defaultSerializedValue
     }
 }
