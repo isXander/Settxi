@@ -19,7 +19,7 @@ class ColorSetting internal constructor(
 
     override var serializedValue: JsonElement
         get() = JsonPrimitive(value.rgb)
-        set(new) { value = Color(new.jsonPrimitive.int) }
+        set(new) { value = Color(new.jsonPrimitive.int, true) }
 
     override val defaultSerializedValue: JsonElement = JsonPrimitive(default.rgb)
 
