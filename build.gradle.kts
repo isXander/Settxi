@@ -20,7 +20,7 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 
 group = "dev.isxander"
-version = System.getenv("GITHUB_RUN_NUMBER") ?: "local"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
