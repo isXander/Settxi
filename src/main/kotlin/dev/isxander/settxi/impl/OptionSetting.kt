@@ -15,7 +15,15 @@ class OptionSetting internal constructor(
     override lateinit var description: String
     override var shouldSave: Boolean = true
 
-    val options = value.values
+    val container by default::container
+    val options by container::options
+
+    override var value: OptionContainer.Option = default
+        set(value) {
+            check(value.container === container) { "Option must be in the same container" }
+            field = value
+        }
+
 
     override var serializedValue: JsonElement
         get() = JsonPrimitive(value.id)
@@ -37,7 +45,7 @@ abstract class OptionContainer {
     val options = arrayListOf<Option>()
     protected fun option(name: String, description: String? = null): Option = Option(this, name, description)
 
-    class Option internal constructor(private val container: OptionContainer, val name: String, val description: String?) {
+    class Option internal constructor(val container: OptionContainer, val name: String, val description: String?) {
         init {
             container.options.add(this)
         }
@@ -48,7 +56,6 @@ abstract class OptionContainer {
             .trim { it == '_' || it.isWhitespace() }
 
         val ordinal = container.options.indexOf(this)
-        val values get() = container.options
     }
 
 }
