@@ -16,7 +16,7 @@ java {
 }
 
 group = "dev.isxander"
-version = "2.1.0"
+version = "2.1.1"
 
 repositories {
     mavenCentral()
@@ -68,12 +68,12 @@ publishing {
     }
 
     repositories {
-        if (hasProperty("woverflow.token")) {
+        if (hasProperty("woverflow.username") && hasProperty("woverflow.password")) {
             println("Publishing ${project.name} to W-OVERFLOW")
             maven(url = "https://repo.woverflow.cc/releases") {
                 credentials {
-                    username = "xander"
-                    password = property("woverflow.token") as? String
+                    username = findProperty("woverflow.username")?.toString()
+                    password = findProperty("woverflow.password")?.toString()
                 }
             }
         }
