@@ -4,7 +4,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
-class EnumSetting<T : Enum<T>>(
+class EnumSetting<T : Enum<*>>(
     default: T,
     lambda: EnumSetting<T>.() -> Unit = {},
     val enumClass: Class<T>,
@@ -14,6 +14,7 @@ class EnumSetting<T : Enum<T>>(
     override lateinit var category: String
     override lateinit var description: String
     override var shouldSave: Boolean = true
+    lateinit var nameProvider: (T) -> String
 
     override var serializedValue: PrimitiveType
         get() = PrimitiveType.of(value.ordinal)
