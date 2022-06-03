@@ -30,4 +30,16 @@ publishing {
             }
         }
     }
+
+    repositories {
+        if (hasProperty("woverflow.username") && hasProperty("woverflow.password")) {
+            println("Publishing ${project.name} to W-OVERFLOW")
+            maven(url = "https://repo.woverflow.cc/releases") {
+                credentials {
+                    username = findProperty("woverflow.username")?.toString()
+                    password = findProperty("woverflow.password")?.toString()
+                }
+            }
+        }
+    }
 }
