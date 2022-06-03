@@ -1,10 +1,8 @@
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.serialization.ConfigProcessor
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.jsonPrimitive
+import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.PrimitiveType
 
 class OptionSetting internal constructor(
     default: OptionContainer.Option,
@@ -25,11 +23,11 @@ class OptionSetting internal constructor(
         }
 
 
-    override var serializedValue: JsonElement
-        get() = JsonPrimitive(value.id)
-        set(new) { value = options.find { it.id == new.jsonPrimitive.content }!! }
+    override var serializedValue: PrimitiveType
+        get() = PrimitiveType.of(value.id)
+        set(new) { value = options.find { it.id == new.string }!! }
 
-    override val defaultSerializedValue: JsonPrimitive = JsonPrimitive(default.id)
+    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default.id)
 
     init {
         this.apply(lambda)

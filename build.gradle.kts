@@ -2,82 +2,26 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // Build
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("jvm") version "1.6.21" apply false
     `java-library`
-
-    // Publishing
-    `maven-publish`
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
+allprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
 
-group = "dev.isxander"
-version = "2.1.1"
-
-repositories {
-    mavenCentral()
-    maven("https://jitpack.io")
-}
-
-dependencies {
-    api(kotlin("stdlib-jdk8"))
-    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2")
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-}
-
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("Settxi") {
-            groupId = project.group as String
-            artifactId = "settxi"
-            version = project.version as String
-
-            artifact(tasks.jar) { builtBy(tasks.jar) }
-            artifact(tasks["sourcesJar"]) { builtBy(tasks["sourcesJar"]) }
-            artifact(tasks["javadocJar"])
-
-            pom {
-                name.set("Settxi")
-                description.set("Annotations based settings library.")
-                url.set("https://github.com/isXander/Settxi")
-
-                developers {
-                    developer {
-                        name.set("isXander")
-                        id.set("isXander")
-                        email.set("business.isxander@gmail.com")
-                    }
-                }
-
-                scm {
-                    connection.set("https://github.com/isXander/Settxi.git")
-                    url.set("https://github.com/isXander/Settxi")
-                }
-            }
-        }
-    }
+    group = "dev.isxander"
+    version = "2.2.0"
 
     repositories {
-        if (hasProperty("woverflow.username") && hasProperty("woverflow.password")) {
-            println("Publishing ${project.name} to W-OVERFLOW")
-            maven(url = "https://repo.woverflow.cc/releases") {
-                credentials {
-                    username = findProperty("woverflow.username")?.toString()
-                    password = findProperty("woverflow.password")?.toString()
-                }
-            }
-        }
+        mavenCentral()
+        maven("https://jitpack.io")
     }
 
+    tasks {
+        withType<KotlinCompile> {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+    }
 }
-

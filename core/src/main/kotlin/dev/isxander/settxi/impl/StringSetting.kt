@@ -1,10 +1,8 @@
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.serialization.ConfigProcessor
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.jsonPrimitive
+import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.PrimitiveType
 
 class StringSetting internal constructor(
     default: String,
@@ -15,11 +13,11 @@ class StringSetting internal constructor(
     override lateinit var description: String
     override var shouldSave: Boolean = true
 
-    override var serializedValue: JsonElement
-        get() = JsonPrimitive(value)
-        set(new) { value = new.jsonPrimitive.content }
+    override var serializedValue: PrimitiveType
+        get() = PrimitiveType.of(value)
+        set(new) { value = new.string }
 
-    override val defaultSerializedValue: JsonElement = JsonPrimitive(default)
+    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default)
 
     init {
         this.apply(lambda)

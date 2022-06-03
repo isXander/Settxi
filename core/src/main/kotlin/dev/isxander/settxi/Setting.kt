@@ -1,6 +1,6 @@
 package dev.isxander.settxi
 
-import kotlinx.serialization.json.JsonElement
+import dev.isxander.settxi.serialization.PrimitiveType
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -24,8 +24,8 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     override fun getValue(thisRef: Any, property: KProperty<*>): T = get()
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = set(value)
 
-    abstract var serializedValue: JsonElement
-    abstract val defaultSerializedValue: JsonElement
+    abstract var serializedValue: PrimitiveType
+    abstract val defaultSerializedValue: PrimitiveType
 
     val nameSerializedKey: String by lazy { name.toJsonKey() }
     val categorySerializedKey: String by lazy { category.toJsonKey() }

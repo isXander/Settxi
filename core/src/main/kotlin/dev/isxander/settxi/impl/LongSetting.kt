@@ -1,11 +1,8 @@
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.serialization.ConfigProcessor
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.long
-import kotlinx.serialization.json.jsonPrimitive
+import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.PrimitiveType
 
 class LongSetting internal constructor(
     default: Long,
@@ -22,11 +19,11 @@ class LongSetting internal constructor(
             field = value.coerceIn(range)
         }
 
-    override var serializedValue: JsonElement
-        get() = JsonPrimitive(value)
-        set(new) { value = new.jsonPrimitive.long }
+    override var serializedValue: PrimitiveType
+        get() = PrimitiveType.of(value)
+        set(new) { value = new.long }
 
-    override val defaultSerializedValue: JsonElement = JsonPrimitive(default)
+    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default)
 
     init {
         this.apply(lambda)

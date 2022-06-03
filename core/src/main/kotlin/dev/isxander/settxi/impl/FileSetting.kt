@@ -1,10 +1,8 @@
 package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
-import dev.isxander.settxi.serialization.ConfigProcessor
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.jsonPrimitive
+import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.PrimitiveType
 import java.io.File
 
 class FileSetting internal constructor(
@@ -16,11 +14,11 @@ class FileSetting internal constructor(
     override lateinit var description: String
     override var shouldSave: Boolean = true
 
-    override var serializedValue: JsonElement
-        get() = JsonPrimitive(value.path)
-        set(new) { value = File(new.jsonPrimitive.content) }
+    override var serializedValue: PrimitiveType
+        get() = PrimitiveType.of(value.path)
+        set(new) { value = File(new.string) }
 
-    override val defaultSerializedValue: JsonElement = JsonPrimitive(default.path)
+    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default.path)
 
     init {
         this.apply(lambda)
