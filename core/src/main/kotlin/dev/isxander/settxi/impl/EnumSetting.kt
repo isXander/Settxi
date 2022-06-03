@@ -7,6 +7,7 @@ import dev.isxander.settxi.serialization.PrimitiveType
 class EnumSetting<T : Enum<T>>(
     default: T,
     lambda: EnumSetting<T>.() -> Unit = {},
+    val enumClass: Class<T>,
     private val values: Array<T>
 ) : Setting<T>(default) {
     override lateinit var name: String
@@ -27,5 +28,5 @@ class EnumSetting<T : Enum<T>>(
 
 @JvmName("enumSetting")
 inline fun <reified T : Enum<T>> ConfigProcessor.enum(default: T, noinline lambda: EnumSetting<T>.() -> Unit): EnumSetting<T> {
-    return EnumSetting(default, lambda, enumValues()).also { settings.add(it) }
+    return EnumSetting(default, lambda, T::class.java, enumValues()).also { settings.add(it) }
 }
