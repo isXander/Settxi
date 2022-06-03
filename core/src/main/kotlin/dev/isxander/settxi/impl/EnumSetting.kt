@@ -4,7 +4,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
-class EnumSetting<T : Enum<*>>(
+class EnumSetting<T : Enum<T>>(
     default: T,
     lambda: EnumSetting<T>.() -> Unit = {},
     val enumClass: Class<T>,

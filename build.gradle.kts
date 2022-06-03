@@ -12,7 +12,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "dev.isxander"
-    version = "2.2.2"
+    version = "2.2.3"
 
     repositories {
         mavenCentral()
