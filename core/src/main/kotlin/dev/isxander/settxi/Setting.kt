@@ -25,7 +25,12 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = set(value)
 
     abstract var serializedValue: PrimitiveType
+        protected set
     abstract val defaultSerializedValue: PrimitiveType
+
+    fun setSerialized(type: PrimitiveType) {
+        serializedValue = migrator(type)
+    }
 
     val nameSerializedKey: String by lazy { name.toJsonKey() }
     val categorySerializedKey: String by lazy { category.toJsonKey() }
@@ -44,6 +49,9 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     fun get(lambda: (T) -> T) { getter = lambda }
     fun set(lambda: (T) -> T) { setter = lambda }
     fun depends(lambda: (T) -> Boolean) = depends.add(lambda)
+
+    protected var migrator: (PrimitiveType) -> PrimitiveType = { it }
+    fun migrator(lambda: (PrimitiveType) -> PrimitiveType) { migrator = lambda }
 
     private fun String.toJsonKey() =
         this

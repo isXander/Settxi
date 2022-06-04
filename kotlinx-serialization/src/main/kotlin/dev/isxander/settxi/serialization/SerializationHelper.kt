@@ -20,7 +20,7 @@ fun List<Setting<*>>.populateFromJson(json: JsonObject) {
         if (!setting.shouldSave) continue
 
         val category = json[setting.categorySerializedKey]?.jsonObject ?: continue
-        setting.serializedValue = category[setting.nameSerializedKey]?.jsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue
+        setting.setSerialized(category[setting.nameSerializedKey]?.jsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue)
     }
 }
 
