@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // Build
-    kotlin("jvm") version "1.6.21" apply false
+    kotlin("jvm") version "1.7.0" apply false
     `java-library`
 }
 

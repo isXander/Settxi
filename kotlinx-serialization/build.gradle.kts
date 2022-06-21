@@ -1,5 +1,5 @@
 plugins {
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("plugin.serialization") version "1.7.0"
 }
 
 java {
@@ -44,12 +44,11 @@ publishing {
     }
 
     repositories {
-        if (hasProperty("woverflow.username") && hasProperty("woverflow.password")) {
-            println("Publishing ${project.name} to W-OVERFLOW")
-            maven(url = "https://repo.woverflow.cc/releases") {
+        if (hasProperty("xander-repo.username") && hasProperty("xander-repo.password")) {
+            maven(url = "https://maven.isxander.dev/releases") {
                 credentials {
-                    username = findProperty("woverflow.username")?.toString()
-                    password = findProperty("woverflow.password")?.toString()
+                    username = findProperty("xander-repo.username")?.toString()
+                    password = findProperty("xander-repo.password")?.toString()
                 }
             }
         }
