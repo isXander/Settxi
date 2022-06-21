@@ -46,6 +46,7 @@ publishing {
     repositories {
         if (hasProperty("xander-repo.username") && hasProperty("xander-repo.password")) {
             maven(url = "https://maven.isxander.dev/releases") {
+                name = "Xander Maven"
                 credentials {
                     username = findProperty("xander-repo.username")?.toString()
                     password = findProperty("xander-repo.password")?.toString()
