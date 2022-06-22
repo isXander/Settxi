@@ -50,6 +50,28 @@ Now you can save and load from a file using JSON!
  }
 ```
 
+#### Gson
+Depend on the `settxi-gson` module in your gradle buildscript.
+
+```kts
+implementation("dev.isxander.settxi:settxi-gson:2.4.0")
+```
+
+Now you can save and load from a file using JSON!
+
+```kt
+ import java.nio.file.Path
+
+ object SettxiSettings : SettxiConfigGson(Path.of("~/.config/settxi.json")) {
+     // the power of settxi is at your fingertips!
+     
+     // make sure to import from the file at the end of your class!
+     init {
+         import()
+     }
+ }
+```
+
 ### GUI
 #### [Cloth Config](https://github.com/shedaniel/cloth-config) (Minecraft)
 Depend on the `settxi-gui-cloth-config` module in your gradle buildscript.
