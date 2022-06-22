@@ -1,8 +1,7 @@
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.enum
-import dev.isxander.settxi.serialization.asJson
-import dev.isxander.settxi.serialization.populateFromJson
+import dev.isxander.settxi.serialization.kotlinx
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import org.junit.jupiter.api.Assertions.*
@@ -27,7 +26,7 @@ internal class SerializationHelperTest {
     fun testSerialize() {
         val settingsSample = SettingsSample()
 
-        val serialized = settingsSample.settings.asJson()
+        val serialized = settingsSample.settings.kotlinx.asJson()
         val expected = buildJsonObject {
             put("settings_sample", buildJsonObject {
                 put("enum_setting", JsonPrimitive(SettingsSample.EnumSample.ONE.ordinal))
@@ -47,7 +46,7 @@ internal class SerializationHelperTest {
             })
         }
 
-        settingsSample.settings.populateFromJson(modified)
+        settingsSample.settings.kotlinx.importFromJson(modified)
 
         assertEquals(settingsSample.enumSetting, SettingsSample.EnumSample.TWO)
     }

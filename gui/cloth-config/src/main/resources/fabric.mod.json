@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "settxi-gui-cloth-config",
+  "version": "${version}",
+  "name": "Settxi Gui (Cloth Config)",
+  "description": "A GUI helper for Settxi using Cloth Config",
+  "authors": [
+    "isXander"
+  ],
+  "contact": {
+    "homepage": "https://isxander.dev",
+    "issues": "https://github.com/isXander/Settxi/issues",
+    "sources": "https://github.com/isXander/Settxi"
+  },
+  "license": "GPLv3",
+  "environment": "client",
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric-language-kotlin": ">=1.8.0+kotlin.1.7.0",
+    "minecraft": "1.19.x",
+    "java": ">=17",
+    "cloth-config": "7.x.x"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ]
+    }
+  }
+}

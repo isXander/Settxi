@@ -4,6 +4,17 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
+/**
+ * Setting backed by a [String] value.
+ *
+ * No unique setting configuration.
+ *
+ * ```
+ * var myString by string("Wow, I think this is a string!") {
+ *     // ...
+ * }
+ * ```
+ */
 class StringSetting internal constructor(
     default: String,
     lambda: StringSetting.() -> Unit = {},
@@ -24,6 +35,9 @@ class StringSetting internal constructor(
     }
 }
 
+/**
+ * Constructs and registers a [StringSetting]
+ */
 @JvmName("stringSetting")
 fun ConfigProcessor.string(default: String, lambda: StringSetting.() -> Unit): StringSetting {
     return StringSetting(default, lambda).also { settings.add(it) }

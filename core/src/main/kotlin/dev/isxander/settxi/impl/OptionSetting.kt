@@ -4,6 +4,23 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
+/**
+ * Setting backed by an [OptionContainer].
+ *
+ * Similar to an enum but has a [OptionContainer.Option.name] and a [OptionContainer.Option.description] instead
+ * though enum is preferred.
+ *
+ * ```
+ * var myOption by option(Alphabet.A) {
+ *     // ...
+ * }
+ *
+ * object Alphabet : OptionContainer() {
+ *     val A = option("A", "The first letter in the alphabet")
+ *     val B = option("B", "The second letter in the alphabet")
+ * }
+ * ```
+ */
 class OptionSetting internal constructor(
     default: OptionContainer.Option,
     lambda: OptionSetting.() -> Unit = {},
@@ -34,11 +51,17 @@ class OptionSetting internal constructor(
     }
 }
 
+/**
+ * Constructs and registers an [OptionSetting]
+ */
 @JvmName("optionSetting")
 fun ConfigProcessor.option(default: OptionContainer.Option, lambda: OptionSetting.() -> Unit): OptionSetting {
     return OptionSetting(default, lambda).also { settings.add(it) }
 }
 
+/**
+ * Similar to an enum class but with [Option.name] and [Option.description] instead.
+ */
 abstract class OptionContainer {
     val options = arrayListOf<Option>()
     protected fun option(name: String, description: String? = null): Option = Option(this, name, description)

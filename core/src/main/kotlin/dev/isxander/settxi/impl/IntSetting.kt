@@ -4,6 +4,18 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
+/**
+ * Setting backed by a [Int] value.
+ *
+ * A range option is present which coerces all set values into it.
+ *
+ * ```
+ * var myDouble by int(0) {
+ *     range = 0..100
+ *     // ...
+ * }
+ * ```
+ */
 class IntSetting internal constructor(
     default: Int,
     lambda: IntSetting.() -> Unit = {},
@@ -30,6 +42,9 @@ class IntSetting internal constructor(
     }
 }
 
+/**
+ * Constructs and registers am [IntSetting]
+ */
 @JvmName("intSetting")
 fun ConfigProcessor.int(default: Int, lambda: IntSetting.() -> Unit): IntSetting {
     return IntSetting(default, lambda).also { settings.add(it) }

@@ -4,6 +4,18 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
+/**
+ * Setting backed by a [Long] value.
+ *
+ * A range option is present which coerces all set values into it.
+ *
+ * ```
+ * var myDouble by long(0L) {
+ *     range = 0L..100L
+ *     // ...
+ * }
+ * ```
+ */
 class LongSetting internal constructor(
     default: Long,
     lambda: LongSetting.() -> Unit = {},
@@ -30,6 +42,9 @@ class LongSetting internal constructor(
     }
 }
 
+/**
+ * Constructs and registers a [LongSetting]
+ */
 @JvmName("longSetting")
 fun ConfigProcessor.long(default: Long, lambda: LongSetting.() -> Unit): LongSetting {
     return LongSetting(default, lambda).also { settings.add(it) }

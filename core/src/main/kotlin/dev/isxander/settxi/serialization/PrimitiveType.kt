@@ -1,5 +1,10 @@
 package dev.isxander.settxi.serialization
 
+/**
+ * Abstraction over a "primitive" type commonly found in data-interchange formats (e.g. JSON)
+ *
+ * This can easily be converted to a library's equivalent or vice-versa for saving/loading.
+ */
 sealed class PrimitiveType {
     open val string: String
         get() = throw UnsupportedOperationException("Type not a string")
@@ -43,6 +48,18 @@ sealed class PrimitiveType {
     open val isNumber: Boolean
         get() = false
 
+    open val isInt: Boolean
+        get() = false
+
+    open val isLong: Boolean
+        get() = false
+
+    open val isFloat: Boolean
+        get() = false
+
+    open val isDouble: Boolean
+        get() = false
+
     open val boolean: Boolean
         get() = throw UnsupportedOperationException("Type not a boolean")
 
@@ -53,12 +70,21 @@ sealed class PrimitiveType {
         get() = false
 
     companion object {
+        /**
+         * Constructs a [PrimitiveType] from a number.
+         */
         fun of(value: Number): PrimitiveType =
             PrimitiveNumberType(value)
 
+        /**
+         * Constructs a [PrimitiveType] from a string.
+         */
         fun of(value: String): PrimitiveType =
             PrimitiveStringType(value)
 
+        /**
+         * Constructs a [PrimitiveType] from a boolean.
+         */
         fun of(value: Boolean): PrimitiveType =
             PrimitiveBooleanType(value)
     }
@@ -97,6 +123,18 @@ class PrimitiveNumberType internal constructor(val value: Number) : PrimitiveTyp
 
     override val isNumber: Boolean
         get() = true
+
+    override val isInt: Boolean
+        get() = number is Int
+
+    override val isLong: Boolean
+        get() = number is Long
+
+    override val isFloat: Boolean
+        get() = number is Float
+
+    override val isDouble: Boolean
+        get() = number is Double
 }
 
 class PrimitiveStringType internal constructor(val value: String) : PrimitiveType() {

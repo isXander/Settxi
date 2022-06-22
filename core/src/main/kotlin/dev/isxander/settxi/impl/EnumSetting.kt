@@ -4,6 +4,18 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
+/**
+ * Setting backed by an [Enum] value.
+ * Serializes with the index of the enum, not the name.
+ *
+ * No unique setting configuration.
+ *
+ * ```
+ * var myEnum by enum(Alphabet.A) {
+ *     // ...
+ * }
+ * ```
+ */
 class EnumSetting<T : Enum<T>>(
     default: T,
     lambda: EnumSetting<T>.() -> Unit = {},
@@ -27,6 +39,9 @@ class EnumSetting<T : Enum<T>>(
     }
 }
 
+/**
+ * Constructs and registers an [EnumSetting]
+ */
 @JvmName("enumSetting")
 inline fun <reified T : Enum<T>> ConfigProcessor.enum(default: T, noinline lambda: EnumSetting<T>.() -> Unit): EnumSetting<T> {
     return EnumSetting(default, lambda, T::class.java, enumValues()).also { settings.add(it) }

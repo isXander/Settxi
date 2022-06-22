@@ -4,6 +4,18 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 
+/**
+ * Setting backed by a [Float] value.
+ *
+ * A range option is present which coerces all set values into it.
+ *
+ * ```
+ * var myDouble by float(0f) {
+ *     range = 0f..1f
+ *     // ...
+ * }
+ * ```
+ */
 class FloatSetting internal constructor(
     default: Float,
     lambda: FloatSetting.() -> Unit = {},
@@ -30,6 +42,9 @@ class FloatSetting internal constructor(
     }
 }
 
+/**
+ * Constructs and registers a [FloatSetting]
+ */
 @JvmName("floatSetting")
 fun ConfigProcessor.float(default: Float, lambda: FloatSetting.() -> Unit): FloatSetting {
     return FloatSetting(default, lambda).also { settings.add(it) }

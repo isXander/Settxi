@@ -5,6 +5,17 @@ import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.PrimitiveType
 import java.io.File
 
+/**
+ * Setting backed by a [java.io.File] value.
+ *
+ * No unique setting configuration.
+ *
+ * ```
+ * var myFile by file(File(".")) {
+ *     // ...
+ * }
+ * ```
+ */
 class FileSetting internal constructor(
     default: File,
     lambda: FileSetting.() -> Unit = {},
@@ -25,6 +36,9 @@ class FileSetting internal constructor(
     }
 }
 
+/**
+ * Constructs and registers a [FileSetting]
+ */
 @JvmName("fileSetting")
 fun ConfigProcessor.file(default: File, lambda: FileSetting.() -> Unit): FileSetting {
     return FileSetting(default, lambda).also { settings.add(it) }

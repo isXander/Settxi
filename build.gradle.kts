@@ -11,8 +11,13 @@ allprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
 
-    group = "dev.isxander"
-    version = "2.3.0"
+    group = "dev.isxander.settxi"
+    version = "2.4.0"
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
 
     repositories {
         mavenCentral()
