@@ -7,7 +7,7 @@ import kotlinx.serialization.json.*
  * Gets [kotlinx.serialization] helper functions to
  * serialize and deserialize settings.
  */
-val List<Setting<*>>.kotlinx: KotlinxSerializationHelper
+val <T : Setting<*>> List<T>.kotlinx: KotlinxSerializationHelper
     get() = KotlinxSerializationHelper(this)
 
 class KotlinxSerializationHelper internal constructor(private val settings: List<Setting<*>>) {

@@ -23,12 +23,12 @@ class IntSetting internal constructor(
     override lateinit var name: String
     override lateinit var category: String
     override lateinit var description: String
-    lateinit var range: IntRange
+    var range: IntRange? = null
     override var shouldSave: Boolean = true
 
     override var value: Int = default
         set(value) {
-            field = value.coerceIn(range)
+            field = range?.let { value.coerceIn(it) } ?: value
         }
 
     override var serializedValue: PrimitiveType

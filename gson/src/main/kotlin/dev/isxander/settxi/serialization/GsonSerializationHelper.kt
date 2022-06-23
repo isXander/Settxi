@@ -8,7 +8,7 @@ import dev.isxander.settxi.Setting
  * Gets [com.google.gson] helper functions to
  * serialize and deserialize settings.
  */
-val List<Setting<*>>.gson: GsonSerializationHelper
+val <T : Setting<*>> List<T>.gson: GsonSerializationHelper
     get() = GsonSerializationHelper(this)
 
 class GsonSerializationHelper internal constructor(private val settings: List<Setting<*>>) {

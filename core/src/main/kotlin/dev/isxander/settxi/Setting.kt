@@ -69,13 +69,13 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     @Deprecated("Use clearer name", ReplaceWith("modifySet(lambda)"))
     fun set(lambda: (T) -> T) { setter = lambda }
 
-    protected var migrator: (PrimitiveType) -> PrimitiveType = { it }
+    protected var migrator: Migrator = { it }
 
     /**
      * Migrates the serialized setting to another type
      * if you changed the setting type
      */
-    fun migrator(lambda: (PrimitiveType) -> PrimitiveType) { migrator = lambda }
+    fun migrator(lambda: Migrator) { migrator = lambda }
 
     private fun String.toJsonKey() =
         this

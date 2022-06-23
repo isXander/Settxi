@@ -21,6 +21,7 @@ import dev.isxander.settxi.serialization.PrimitiveType
  * }
  * ```
  */
+@Deprecated("Use EnumSetting instead")
 class OptionSetting internal constructor(
     default: OptionContainer.Option,
     lambda: OptionSetting.() -> Unit = {},
@@ -54,6 +55,7 @@ class OptionSetting internal constructor(
 /**
  * Constructs and registers an [OptionSetting]
  */
+@Deprecated("Use EnumSetting instead")
 @JvmName("optionSetting")
 fun ConfigProcessor.option(default: OptionContainer.Option, lambda: OptionSetting.() -> Unit): OptionSetting {
     return OptionSetting(default, lambda).also { settings.add(it) }
@@ -62,6 +64,7 @@ fun ConfigProcessor.option(default: OptionContainer.Option, lambda: OptionSettin
 /**
  * Similar to an enum class but with [Option.name] and [Option.description] instead.
  */
+@Deprecated("Use EnumSetting instead")
 abstract class OptionContainer {
     val options = arrayListOf<Option>()
     protected fun option(name: String, description: String? = null): Option = Option(this, name, description)

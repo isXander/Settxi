@@ -26,7 +26,12 @@ class EnumSetting<T : Enum<T>>(
     override lateinit var category: String
     override lateinit var description: String
     override var shouldSave: Boolean = true
-    lateinit var nameProvider: (T) -> String
+    var nameProvider: (T) -> String = {
+        if (it is SettingDisplayName)
+            it.displayName
+        else
+            error("Name provider not set and enum does not implement SettingDisplayName")
+    }
 
     override var serializedValue: PrimitiveType
         get() = PrimitiveType.of(value.ordinal)
@@ -45,4 +50,8 @@ class EnumSetting<T : Enum<T>>(
 @JvmName("enumSetting")
 inline fun <reified T : Enum<T>> ConfigProcessor.enum(default: T, noinline lambda: EnumSetting<T>.() -> Unit): EnumSetting<T> {
     return EnumSetting(default, lambda, T::class.java, enumValues()).also { settings.add(it) }
+}
+
+interface SettingDisplayName {
+    val displayName: String
 }

@@ -23,12 +23,12 @@ class LongSetting internal constructor(
     override lateinit var name: String
     override lateinit var category: String
     override lateinit var description: String
-    lateinit var range: LongRange
+    var range: LongRange? = null
     override var shouldSave: Boolean = true
 
     override var value: Long = default
         set(value) {
-            field = value.coerceIn(range)
+            field = range?.let { value.coerceIn(it) } ?: value
         }
 
     override var serializedValue: PrimitiveType
