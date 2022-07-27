@@ -17,10 +17,14 @@ class KotlinxSerializationHelper internal constructor(private val settings: List
     fun asJson(): JsonObject {
         val settings = mutableMapOf<String, MutableMap<String, PrimitiveType>>()
         for (setting in this.settings) {
-            if (!setting.shouldSave) continue
+            try {
+                if (!setting.shouldSave) continue
 
-            val category = settings.computeIfAbsent(setting.categorySerializedKey) { mutableMapOf() }
-            category[setting.nameSerializedKey] = setting.serializedValue
+                val category = settings.computeIfAbsent(setting.categorySerializedKey) { mutableMapOf() }
+                category[setting.nameSerializedKey] = setting.serializedValue
+            } catch (e: Exception) {
+                SettxiSerializationException("Failed to serialize setting \"${setting.name}\"", e).printStackTrace()
+            }
         }
 
         return JsonObject(settings.mapValues { (_, content) -> JsonObject(content.mapValues { it.value.toJsonPrimitive() }) })
@@ -31,12 +35,16 @@ class KotlinxSerializationHelper internal constructor(private val settings: List
      */
     fun importFromJson(json: JsonObject) {
         for (setting in settings) {
-            if (!setting.shouldSave) continue
+            try {
+                if (!setting.shouldSave) continue
 
-            val category = json[setting.categorySerializedKey]?.jsonObject ?: continue
-            setting.setSerialized(
-                category[setting.nameSerializedKey]?.jsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue
-            )
+                val category = json[setting.categorySerializedKey]?.jsonObject ?: continue
+                setting.setSerialized(
+                    category[setting.nameSerializedKey]?.jsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue
+                )
+            } catch (e: Exception) {
+                SettxiSerializationException("Failed to import setting \"${setting.name}\"", e).printStackTrace()
+            }
         }
     }
 

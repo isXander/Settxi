@@ -15,7 +15,7 @@ dependencies {
     mappings("net.fabricmc:yarn:$minecraftVersion+build.+:v2")
 
     modImplementation("net.fabricmc:fabric-loader:0.14.+")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.0+kotlin.1.7.0")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.2+kotlin.1.7.10")
 
     api(project(":core"))
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:7.+")

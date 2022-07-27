@@ -69,6 +69,9 @@ sealed class PrimitiveType {
     open val isBoolean: Boolean
         get() = false
 
+    open val typeString: String
+        get() = "unknown"
+
     companion object {
         /**
          * Constructs a [PrimitiveType] from a number.
@@ -135,6 +138,15 @@ class PrimitiveNumberType internal constructor(val value: Number) : PrimitiveTyp
 
     override val isDouble: Boolean
         get() = number is Double
+
+    override val typeString: String
+        get() = when {
+            isInt -> "int"
+            isLong -> "long"
+            isFloat -> "float"
+            isDouble -> "double"
+            else -> "number"
+        }
 }
 
 class PrimitiveStringType internal constructor(val value: String) : PrimitiveType() {
@@ -146,6 +158,9 @@ class PrimitiveStringType internal constructor(val value: String) : PrimitiveTyp
 
     override val isString: Boolean
         get() = true
+
+    override val typeString: String
+        get() = "string"
 }
 
 class PrimitiveBooleanType internal constructor(val value: Boolean) : PrimitiveType() {
@@ -157,4 +172,7 @@ class PrimitiveBooleanType internal constructor(val value: Boolean) : PrimitiveT
 
     override val isBoolean: Boolean
         get() = true
+
+    override val typeString: String
+        get() = "boolean"
 }

@@ -18,13 +18,17 @@ class GsonSerializationHelper internal constructor(private val settings: List<Se
     fun asJson(): JsonObject {
         val jsonObject = JsonObject()
         for (setting in settings) {
-            if (!setting.shouldSave) continue
+            try {
+                if (!setting.shouldSave) continue
 
-            if (!jsonObject.has(setting.categorySerializedKey))
-                jsonObject.add(setting.categorySerializedKey, JsonObject())
-            val category = jsonObject.getAsJsonObject(setting.categorySerializedKey)
+                if (!jsonObject.has(setting.categorySerializedKey))
+                    jsonObject.add(setting.categorySerializedKey, JsonObject())
+                val category = jsonObject.getAsJsonObject(setting.categorySerializedKey)
 
-            category.add(setting.nameSerializedKey, setting.serializedValue.toJsonPrimitive())
+                category.add(setting.nameSerializedKey, setting.serializedValue.toJsonPrimitive())
+            } catch (e: Exception) {
+                SettxiSerializationException("Failed to serialize setting \"${setting.name}\"", e).printStackTrace()
+            }
         }
 
         return jsonObject
@@ -35,12 +39,16 @@ class GsonSerializationHelper internal constructor(private val settings: List<Se
      */
     fun importFromJson(json: JsonObject) {
         for (setting in settings) {
-            if (!setting.shouldSave) continue
+            try {
+                if (!setting.shouldSave) continue
 
-            val category = json[setting.categorySerializedKey]?.asJsonObject ?: continue
-            setting.setSerialized(
-                category[setting.nameSerializedKey]?.asJsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue
-            )
+                val category = json[setting.categorySerializedKey]?.asJsonObject ?: continue
+                setting.setSerialized(
+                    category[setting.nameSerializedKey]?.asJsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue
+                )
+            } catch (e: Exception) {
+                SettxiSerializationException("Failed to import setting \"${setting.name}\"", e).printStackTrace()
+            }
         }
     }
 
