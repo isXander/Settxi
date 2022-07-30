@@ -9,6 +9,7 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     abstract val category: String
     abstract val description: String
     abstract val shouldSave: Boolean
+    open var hidden = false
 
     protected open var value: T = default
 

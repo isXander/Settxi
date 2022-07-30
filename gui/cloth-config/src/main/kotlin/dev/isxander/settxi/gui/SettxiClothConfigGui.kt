@@ -21,6 +21,8 @@ fun SettxiConfig.clothGui(title: Text, parent: Screen? = null): Screen =
         this.title = title
 
         for (setting in settings) {
+            if (setting.hidden) continue
+
             val category = getOrCreateCategory(Text.translatable(setting.category))
             category.addEntry(entry(setting))
         }
