@@ -7,8 +7,8 @@ pluginManagement {
 }
 
 include("core")
-include("kotlinx-serialization")
-include("gson")
+include(":serialization:kotlinx-serialization")
+include(":serialization:gson")
 
 listOf(
     "cloth-config"

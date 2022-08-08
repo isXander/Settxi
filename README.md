@@ -91,3 +91,6 @@ object SettxiSettings : SettxiConfig() {
 
 SettxiSettings.clothGui(title = Text.empty(), parent = null) // now you have a Screen
 ```
+
+You can register factories for custom `Setting` classes as well.
+Learn how [on the wiki](https://github.com/isXander/Settxi/wiki/Usage#cloth-config-minecraft)

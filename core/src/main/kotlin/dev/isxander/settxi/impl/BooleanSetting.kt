@@ -21,7 +21,7 @@ class BooleanSetting internal constructor(
 ) : Setting<Boolean>(default) {
     override lateinit var name: String
     override lateinit var category: String
-    override lateinit var description: String
+    override var description: String? = null
     override var shouldSave: Boolean = true
 
     override var serializedValue: PrimitiveType

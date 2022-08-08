@@ -6,9 +6,26 @@ repositories {
     mavenCentral()
     maven("https://maven.fabricmc.net/")
     maven("https://maven.shedaniel.me/")
+    maven("https://maven.terraformersmc.com")
 }
 
-val minecraftVersion = "1.19"
+val testmod by sourceSets.registering {
+    compileClasspath += sourceSets.main.get().compileClasspath
+    runtimeClasspath += sourceSets.main.get().runtimeClasspath
+}
+
+loom {
+    runs {
+        register("testmod") {
+            client()
+            ideConfigGenerated(true)
+            name("Test Mod")
+            source(testmod.get())
+        }
+    }
+}
+
+val minecraftVersion = "1.19.2"
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -18,7 +35,9 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:1.8.2+kotlin.1.7.10")
 
     api(project(":core"))
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:7.+")
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:8.0.+")
+
+    "testmodImplementation"(sourceSets.main.get().output)
 }
 
 tasks {

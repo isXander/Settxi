@@ -22,14 +22,14 @@ class FileSetting internal constructor(
 ) : Setting<File>(default) {
     override lateinit var name: String
     override lateinit var category: String
-    override lateinit var description: String
+    override var description: String? = null
     override var shouldSave: Boolean = true
 
     override var serializedValue: PrimitiveType
-        get() = PrimitiveType.of(value.path)
+        get() = PrimitiveType.of(value.absolutePath)
         set(new) { value = File(new.string) }
 
-    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default.path)
+    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default.absolutePath)
 
     init {
         this.apply(lambda)
