@@ -2,7 +2,9 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.Setting
+import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.PrimitiveType
+import dev.isxander.settxi.serialization.SerializedType
 import java.nio.file.Path
 
 /**
@@ -25,11 +27,11 @@ class PathSetting internal constructor(
     override var description: String? = null
     override var shouldSave: Boolean = true
 
-    override var serializedValue: PrimitiveType
+    override var serializedValue: SerializedType
         get() = PrimitiveType.of(value.toAbsolutePath().toString())
-        set(new) { value = Path.of(new.string) }
+        set(new) { value = Path.of(new.primitive.string) }
 
-    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default.toAbsolutePath().toString())
+    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.toAbsolutePath().toString()) }
 
     init {
         this.apply(lambda)

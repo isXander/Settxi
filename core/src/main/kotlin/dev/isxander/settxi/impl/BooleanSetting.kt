@@ -2,7 +2,9 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.PrimitiveType
+import dev.isxander.settxi.serialization.SerializedType
 
 /**
  * Setting backed by a [Boolean] value.
@@ -24,11 +26,11 @@ class BooleanSetting internal constructor(
     override var description: String? = null
     override var shouldSave: Boolean = true
 
-    override var serializedValue: PrimitiveType
+    override var serializedValue: SerializedType
         get() = PrimitiveType.of(value)
-        set(new) { value = new.boolean }
+        set(new) { value = new.primitive.boolean }
 
-    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default)
+    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default) }
 
     init {
         this.apply(lambda)

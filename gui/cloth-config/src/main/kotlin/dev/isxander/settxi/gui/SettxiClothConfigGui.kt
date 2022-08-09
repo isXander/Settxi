@@ -136,22 +136,6 @@ object SettxiClothConfigGui {
                 setSaveConsumer { setting.set(it) }
             }.build()
         }
-        registerType<OptionSetting> { setting ->
-            entryBuilder().startStringDropdownMenu(
-                Text.translatable(setting.name),
-                setting.get().name
-            ) { Text.translatable(it) }.apply {
-                defaultValue = Supplier { setting.default.name }
-                setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                isSuggestionMode = false
-                setSelections(setting.options.map { Text.translatable(it.name).string })
-                setSaveConsumer {
-                    setting.set(setting.options.first { option ->
-                        Text.translatable(option.name).string == it
-                    })
-                }
-            }.build()
-        }
         registerType<EnumSetting<*>> { setting ->
             setting.toEnumSelector(entryBuilder()).build()
         }

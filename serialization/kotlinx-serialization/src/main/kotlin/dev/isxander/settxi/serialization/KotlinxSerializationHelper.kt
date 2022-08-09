@@ -15,7 +15,7 @@ class KotlinxSerializationHelper internal constructor(private val settings: List
      * Exports all settings into a [JsonObject] to be saved.
      */
     fun asJson(): JsonObject {
-        val settings = mutableMapOf<String, MutableMap<String, PrimitiveType>>()
+        val settings = mutableMapOf<String, MutableMap<String, SerializedType>>()
         for (setting in this.settings) {
             try {
                 if (!setting.shouldSave) continue
@@ -27,20 +27,21 @@ class KotlinxSerializationHelper internal constructor(private val settings: List
             }
         }
 
-        return JsonObject(settings.mapValues { (_, content) -> JsonObject(content.mapValues { it.value.toJsonPrimitive() }) })
+        return JsonObject(settings.mapValues { (_, content) -> JsonObject(content.mapValues { (_, v) -> v.toJsonElement() }) })
     }
 
     /**
      * Import values from an exported [JsonObject]
      */
     fun importFromJson(json: JsonObject) {
+        val rootObject = json.toObjectType()
         for (setting in settings) {
             try {
                 if (!setting.shouldSave) continue
 
-                val category = json[setting.categorySerializedKey]?.jsonObject ?: continue
+                val category = rootObject[setting.categorySerializedKey]?.`object`
                 setting.setSerialized(
-                    category[setting.nameSerializedKey]?.jsonPrimitive?.toPrimitiveType() ?: setting.defaultSerializedValue
+                    category?.get(setting.nameSerializedKey) ?: setting.defaultSerializedValue(rootObject, category)
                 )
             } catch (e: Exception) {
                 SettxiSerializationException("Failed to import setting \"${setting.name}\"", e).printStackTrace()
@@ -49,6 +50,17 @@ class KotlinxSerializationHelper internal constructor(private val settings: List
     }
 
     companion object {
+        fun JsonElement.toSerializedType(): SerializedType =
+            when (this) {
+                is JsonObject -> toObjectType()
+                is JsonPrimitive -> toPrimitiveType()
+                is JsonArray -> toArrayType()
+                is JsonNull -> error("Can't serialize null!")
+            }
+
+        fun JsonObject.toObjectType(): ObjectType =
+            ObjectType(this.mapValues { (_, v) -> v.toSerializedType() }.toMutableMap())
+
         fun JsonPrimitive.toPrimitiveType(): PrimitiveType =
             when {
                 isString -> PrimitiveType.of(content)
@@ -56,6 +68,22 @@ class KotlinxSerializationHelper internal constructor(private val settings: List
                 booleanOrNull != null -> PrimitiveType.of(boolean)
                 else -> error("Couldn't convert JsonPrimitive -> PrimitiveType")
             }
+
+        fun JsonArray.toArrayType(): ArrayType =
+            ArrayType(this.map { it.toSerializedType() }.toMutableList())
+
+        fun SerializedType.toJsonElement(): JsonElement =
+            when (this) {
+                is ObjectType -> toJsonObject()
+                is ArrayType -> toJsonArray()
+                is PrimitiveType -> toJsonPrimitive()
+            }
+
+        fun ObjectType.toJsonObject(): JsonObject =
+            JsonObject(this.mapValues { (_, v) -> v.toJsonElement() })
+
+        fun ArrayType.toJsonArray(): JsonArray =
+            JsonArray(this.map { it.toJsonElement() })
 
         fun PrimitiveType.toJsonPrimitive(): JsonPrimitive =
             when {

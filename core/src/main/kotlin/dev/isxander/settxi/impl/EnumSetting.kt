@@ -2,7 +2,9 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.PrimitiveType
+import dev.isxander.settxi.serialization.SerializedType
 
 /**
  * Setting backed by an [Enum] value.
@@ -30,11 +32,11 @@ class EnumSetting<T : Enum<T>>(
         if (it is SettingDisplayName) it.displayName else it.name
     }
 
-    override var serializedValue: PrimitiveType
+    override var serializedValue: SerializedType
         get() = PrimitiveType.of(value.ordinal)
-        set(new) { value = values[new.int] }
+        set(new) { value = values[new.primitive.int] }
 
-    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default.ordinal)
+    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.ordinal) }
 
     init {
         this.apply(lambda)

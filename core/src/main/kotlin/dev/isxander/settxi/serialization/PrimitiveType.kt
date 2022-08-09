@@ -5,7 +5,7 @@ package dev.isxander.settxi.serialization
  *
  * This can easily be converted to a library's equivalent or vice-versa for saving/loading.
  */
-sealed class PrimitiveType {
+sealed class PrimitiveType : SerializedType() {
     open val string: String
         get() = throw UnsupportedOperationException("Type not a string")
 
@@ -69,8 +69,8 @@ sealed class PrimitiveType {
     open val isBoolean: Boolean
         get() = false
 
-    open val typeString: String
-        get() = "unknown"
+    override val typeString: String
+        get() = "primitive"
 
     companion object {
         /**

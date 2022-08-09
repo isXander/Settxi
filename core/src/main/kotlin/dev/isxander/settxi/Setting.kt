@@ -1,6 +1,7 @@
 package dev.isxander.settxi
 
-import dev.isxander.settxi.serialization.PrimitiveType
+import dev.isxander.settxi.serialization.ObjectType
+import dev.isxander.settxi.serialization.SerializedType
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -36,11 +37,11 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
     override fun getValue(thisRef: Any, property: KProperty<*>): T = get()
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) = set(value)
 
-    abstract var serializedValue: PrimitiveType
+    abstract var serializedValue: SerializedType
         protected set
-    abstract val defaultSerializedValue: PrimitiveType
+    abstract val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType
 
-    fun setSerialized(type: PrimitiveType) {
+    fun setSerialized(type: SerializedType) {
         serializedValue = migrator(type)
     }
 

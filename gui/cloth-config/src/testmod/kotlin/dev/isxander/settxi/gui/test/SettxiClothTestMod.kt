@@ -4,7 +4,7 @@ import dev.isxander.settxi.gui.clothGui
 import dev.isxander.settxi.impl.*
 import dev.isxander.settxi.serialization.SettxiConfig
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.text.Text
@@ -16,7 +16,7 @@ object SettxiClothTestMod : ClientModInitializer {
 
     override fun onInitializeClient() {
         ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
-            dispatcher.register(ClientCommandManager.literal("settxi-cloth-test").executes {
+            dispatcher.register(literal("settxi-cloth-test").executes {
                 displayGui = true
                 0
             })

@@ -2,7 +2,9 @@ package dev.isxander.settxi.impl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
+import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.PrimitiveType
+import dev.isxander.settxi.serialization.SerializedType
 
 /**
  * Setting backed by a [Double] value.
@@ -31,11 +33,11 @@ class DoubleSetting internal constructor(
             field = range?.let { value.coerceIn(it) } ?: value
         }
 
-    override var serializedValue: PrimitiveType
+    override var serializedValue: SerializedType
         get() = PrimitiveType.of(value)
-        set(new) { value = new.double }
+        set(new) { value = new.primitive.double }
 
-    override val defaultSerializedValue: PrimitiveType = PrimitiveType.of(default)
+    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default) }
 
     init {
         this.apply(lambda)
