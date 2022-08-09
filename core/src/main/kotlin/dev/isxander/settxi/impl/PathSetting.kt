@@ -31,7 +31,7 @@ class PathSetting internal constructor(
         get() = PrimitiveType.of(value.toAbsolutePath().toString())
         set(new) { value = Path.of(new.primitive.string) }
 
-    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.toAbsolutePath().toString()) }
+    override var defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.toAbsolutePath().toString()) }
 
     init {
         this.apply(lambda)

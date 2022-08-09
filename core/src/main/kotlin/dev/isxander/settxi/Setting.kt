@@ -39,7 +39,7 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
 
     abstract var serializedValue: SerializedType
         protected set
-    abstract val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType
+    abstract var defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType
 
     fun setSerialized(type: SerializedType) {
         serializedValue = migrator(type)

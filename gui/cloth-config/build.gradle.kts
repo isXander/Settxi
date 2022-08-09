@@ -80,6 +80,8 @@ publishing {
                     password = property("xander-repo.password") as? String
                 }
             }
+        } else {
+            println("Xander Maven can't publish")
         }
     }
 }

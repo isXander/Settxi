@@ -31,7 +31,7 @@ class FileSetting internal constructor(
         get() = PrimitiveType.of(value.absolutePath)
         set(new) { value = File(new.primitive.string) }
 
-    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.absolutePath) }
+    override var defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.absolutePath) }
 
     init {
         this.apply(lambda)

@@ -37,7 +37,7 @@ class IntSetting internal constructor(
         get() = PrimitiveType.of(value)
         set(new) { value = new.primitive.int }
 
-    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default) }
+    override var defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default) }
 
     init {
         this.apply(lambda)

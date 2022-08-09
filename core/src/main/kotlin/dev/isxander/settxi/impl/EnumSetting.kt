@@ -36,7 +36,7 @@ class EnumSetting<T : Enum<T>>(
         get() = PrimitiveType.of(value.ordinal)
         set(new) { value = values[new.primitive.int] }
 
-    override val defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.ordinal) }
+    override var defaultSerializedValue: (root: ObjectType, category: ObjectType?) -> SerializedType = { _, _ -> PrimitiveType.of(default.ordinal) }
 
     init {
         this.apply(lambda)
