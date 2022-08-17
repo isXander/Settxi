@@ -173,6 +173,6 @@ private fun <T : Enum<T>> EnumSetting<T>.toEnumSelector(entryBuilder: ConfigEntr
     entryBuilder.startEnumSelector(Text.translatable(name), enumClass, get(false)).apply {
         defaultValue = Supplier { default }
         setTooltip(description?.let{ Text.translatable(it) } ?: Text.empty())
-        setSaveConsumer { set(it) }
+        setSaveConsumer { set(it, false) }
         setEnumNameProvider { Text.translatable(nameProvider(it as T)) }
     }
