@@ -55,17 +55,17 @@ object SettxiClothConfigGui {
 
     init {
         registerType<BooleanSetting> { setting ->
-            entryBuilder().startBooleanToggle(Text.translatable(setting.name), setting.get()).apply {
+            entryBuilder().startBooleanToggle(Text.translatable(setting.name), setting.get(false)).apply {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                setSaveConsumer { setting.set(it) }
+                setSaveConsumer { setting.set(it, false) }
             }.build()
         }
         registerType<DoubleSetting> { setting ->
-            entryBuilder().startDoubleField(Text.translatable(setting.name), setting.get()).apply {
+            entryBuilder().startDoubleField(Text.translatable(setting.name), setting.get(false)).apply {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let { Text.translatable(it) } ?: Text.empty())
-                setSaveConsumer { setting.set(it) }
+                setSaveConsumer { setting.set(it, false) }
                 if (setting.range != null) {
                     setMin(setting.range!!.start)
                     setMax(setting.range!!.endInclusive)
@@ -73,10 +73,10 @@ object SettxiClothConfigGui {
             }.build()
         }
         registerType<FloatSetting> { setting ->
-            entryBuilder().startFloatField(Text.translatable(setting.name), setting.get()).apply {
+            entryBuilder().startFloatField(Text.translatable(setting.name), setting.get(false)).apply {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                setSaveConsumer { setting.set(it) }
+                setSaveConsumer { setting.set(it, false) }
                 if (setting.range != null) {
                     setMin(setting.range!!.start)
                     setMax(setting.range!!.endInclusive)
@@ -87,22 +87,22 @@ object SettxiClothConfigGui {
             if (setting.range != null) {
                 entryBuilder().startLongSlider(
                     Text.translatable(setting.name),
-                    setting.get(),
+                    setting.get(false),
                     setting.range!!.first,
                     setting.range!!.last
                 ).apply {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                    setSaveConsumer { setting.set(it) }
+                    setSaveConsumer { setting.set(it, false) }
                 }
             } else {
                 entryBuilder().startLongField(
                     Text.translatable(setting.name),
-                    setting.get(),
+                    setting.get(false),
                 ).apply {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                    setSaveConsumer { setting.set(it) }
+                    setSaveConsumer { setting.set(it, false) }
                 }
             }.build()
         }
@@ -110,40 +110,40 @@ object SettxiClothConfigGui {
             if (setting.range != null) {
                 entryBuilder().startIntSlider(
                     Text.translatable(setting.name),
-                    setting.get(),
+                    setting.get(false),
                     setting.range!!.first,
                     setting.range!!.last
                 ).apply {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                    setSaveConsumer { setting.set(it) }
+                    setSaveConsumer { setting.set(it, false) }
                 }
             } else {
                 entryBuilder().startIntField(
                     Text.translatable(setting.name),
-                    setting.get(),
+                    setting.get(false),
                 ).apply {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                    setSaveConsumer { setting.set(it) }
+                    setSaveConsumer { setting.set(it, false) }
                 }
             }.build()
         }
         registerType<StringSetting> { setting ->
-            entryBuilder().startStrField(Text.translatable(setting.name), setting.get()).apply {
+            entryBuilder().startStrField(Text.translatable(setting.name), setting.get(false)).apply {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                setSaveConsumer { setting.set(it) }
+                setSaveConsumer { setting.set(it, false) }
             }.build()
         }
         registerType<EnumSetting<*>> { setting ->
             setting.toEnumSelector(entryBuilder()).build()
         }
         registerType<FileSetting> { setting ->
-            entryBuilder().startStrField(Text.translatable(setting.name), setting.get().absolutePath).apply {
+            entryBuilder().startStrField(Text.translatable(setting.name), setting.get(false).absolutePath).apply {
                 defaultValue = Supplier { setting.default.absolutePath }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                setSaveConsumer { setting.set(File(it).absoluteFile) }
+                setSaveConsumer { setting.set(File(it).absoluteFile, false) }
                 setErrorSupplier {
                     if (!File(it).exists())
                         Optional.of(Text.translatable("settxi.cloth.file_not_exists"))
@@ -153,10 +153,10 @@ object SettxiClothConfigGui {
             }.build()
         }
         registerType<PathSetting> { setting ->
-            entryBuilder().startStrField(Text.translatable(setting.name), setting.get().toAbsolutePath().toString()).apply {
+            entryBuilder().startStrField(Text.translatable(setting.name), setting.get(false).toAbsolutePath().toString()).apply {
                 defaultValue = Supplier { setting.default.toAbsolutePath().toString() }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
-                setSaveConsumer { setting.set(Paths.get(it)) }
+                setSaveConsumer { setting.set(Paths.get(it), false) }
                 setErrorSupplier {
                     if (Paths.get(it).notExists())
                         Optional.of(Text.translatable("settxi.cloth.file_not_exists"))
@@ -170,7 +170,7 @@ object SettxiClothConfigGui {
 
 @Suppress("unchecked_cast")
 private fun <T : Enum<T>> EnumSetting<T>.toEnumSelector(entryBuilder: ConfigEntryBuilder): EnumSelectorBuilder<T> =
-    entryBuilder.startEnumSelector(Text.translatable(name), enumClass, get()).apply {
+    entryBuilder.startEnumSelector(Text.translatable(name), enumClass, get(false)).apply {
         defaultValue = Supplier { default }
         setTooltip(description?.let{ Text.translatable(it) } ?: Text.empty())
         setSaveConsumer { set(it) }
