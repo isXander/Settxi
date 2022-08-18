@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
 /**
  * Constructs a Cloth Config gui
  */
-fun SettxiConfig.clothGui(title: Text, parent: Screen? = null): Screen =
+fun SettxiConfig.clothGui(title: Text, parent: Screen? = null, builder: ConfigBuilder.() -> Unit = {}): Screen =
     ConfigBuilder.create().apply {
         this.parentScreen = parent
         this.title = title
@@ -33,6 +33,8 @@ fun SettxiConfig.clothGui(title: Text, parent: Screen? = null): Screen =
         }
 
         setSavingRunnable { export() }
+
+        builder()
     }.build()
 
 object SettxiClothConfigGui {
