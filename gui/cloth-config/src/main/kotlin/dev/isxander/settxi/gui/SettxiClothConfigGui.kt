@@ -7,12 +7,12 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry
 import me.shedaniel.clothconfig2.impl.builders.EnumSelectorBuilder
+import me.shedaniel.clothconfig2.impl.builders.FieldBuilder
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 import java.io.File
 import java.nio.file.Paths
 import java.util.Optional
-import java.util.function.Function
 import java.util.function.Supplier
 import kotlin.io.path.notExists
 import kotlin.reflect.KClass
@@ -56,11 +56,21 @@ object SettxiClothConfigGui {
     }
 
     init {
+        val requireRestartProperty: FieldBuilder<*, *>.(Setting<*>) -> Unit = { setting ->
+            setting.customProperties["cloth_requireRestart"]?.let {
+                requireRestart(it as? Boolean == true)
+            }
+        }
+
         registerType<BooleanSetting> { setting ->
             entryBuilder().startBooleanToggle(Text.translatable(setting.name), setting.get(false)).apply {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                 setSaveConsumer { setting.set(it, false) }
+                requireRestartProperty(setting)
+                setting.customProperties["cloth_yesNoText"]?.let {
+                    setYesNoTextSupplier(it as? (Boolean) -> Text ?: throw IllegalArgumentException("unexpected type for property 'cloth_yesNoText'"))
+                }
             }.build()
         }
         registerType<DoubleSetting> { setting ->
@@ -68,6 +78,7 @@ object SettxiClothConfigGui {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let { Text.translatable(it) } ?: Text.empty())
                 setSaveConsumer { setting.set(it, false) }
+                requireRestartProperty(setting)
                 if (setting.range != null) {
                     setMin(setting.range!!.start)
                     setMax(setting.range!!.endInclusive)
@@ -79,6 +90,7 @@ object SettxiClothConfigGui {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                 setSaveConsumer { setting.set(it, false) }
+                requireRestartProperty(setting)
                 if (setting.range != null) {
                     setMin(setting.range!!.start)
                     setMax(setting.range!!.endInclusive)
@@ -96,6 +108,11 @@ object SettxiClothConfigGui {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                     setSaveConsumer { setting.set(it, false) }
+                    requireRestartProperty(setting)
+                }.build().apply {
+                    setting.customProperties["cloth_textGetter"]?.let {
+                        setTextGetter(it as? (Long) -> Text ?: throw IllegalArgumentException("unexpected type for property 'cloth_textGetter'"))
+                    }
                 }
             } else {
                 entryBuilder().startLongField(
@@ -105,8 +122,9 @@ object SettxiClothConfigGui {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                     setSaveConsumer { setting.set(it, false) }
-                }
-            }.build()
+                    requireRestartProperty(setting)
+                }.build()
+            }
         }
         registerType<IntSetting> { setting ->
             if (setting.range != null) {
@@ -119,6 +137,11 @@ object SettxiClothConfigGui {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                     setSaveConsumer { setting.set(it, false) }
+                    requireRestartProperty(setting)
+                }.build().apply {
+                    setting.customProperties["cloth_textGetter"]?.let {
+                        setTextGetter(it as? (Int) -> Text ?: throw IllegalArgumentException("unexpected type for property 'cloth_textGetter'"))
+                    }
                 }
             } else {
                 entryBuilder().startIntField(
@@ -128,24 +151,29 @@ object SettxiClothConfigGui {
                     defaultValue = Supplier { setting.default }
                     setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                     setSaveConsumer { setting.set(it, false) }
-                }
-            }.build()
+                    requireRestartProperty(setting)
+                }.build()
+            }
         }
         registerType<StringSetting> { setting ->
             entryBuilder().startStrField(Text.translatable(setting.name), setting.get(false)).apply {
                 defaultValue = Supplier { setting.default }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                 setSaveConsumer { setting.set(it, false) }
+                requireRestartProperty(setting)
             }.build()
         }
         registerType<EnumSetting<*>> { setting ->
-            setting.toEnumSelector(entryBuilder()).build()
+            setting.toEnumSelector(entryBuilder()).apply {
+                requireRestartProperty(setting)
+            }.build()
         }
         registerType<FileSetting> { setting ->
             entryBuilder().startStrField(Text.translatable(setting.name), setting.get(false).absolutePath).apply {
                 defaultValue = Supplier { setting.default.absolutePath }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                 setSaveConsumer { setting.set(File(it).absoluteFile, false) }
+                requireRestartProperty(setting)
                 setErrorSupplier {
                     if (!File(it).exists())
                         Optional.of(Text.translatable("settxi.cloth.file_not_exists"))
@@ -159,6 +187,7 @@ object SettxiClothConfigGui {
                 defaultValue = Supplier { setting.default.toAbsolutePath().toString() }
                 setTooltip(setting.description?.let{ Text.translatable(it) } ?: Text.empty())
                 setSaveConsumer { setting.set(Paths.get(it), false) }
+                requireRestartProperty(setting)
                 setErrorSupplier {
                     if (Paths.get(it).notExists())
                         Optional.of(Text.translatable("settxi.cloth.file_not_exists"))

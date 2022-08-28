@@ -14,6 +14,8 @@ abstract class Setting<T>(val default: T) : ReadWriteProperty<Any, T> {
 
     protected open var value: T = default
 
+    val customProperties = mutableMapOf<String, Any>()
+
     /**
      * Gets the current value
      *

@@ -65,6 +65,7 @@ object SettxiClothTestMod : ClientModInitializer {
             name = "Test Int"
             category = "Types"
             range = 0..100
+            customProperties["cloth_textGetter"] = { value: Int -> Text.literal("Value: %d test".format(value)) }
         }
 
         var testLong by long(50L) {
