@@ -33,8 +33,8 @@ var <N : Number> NumberSetting<N>.spruceUISliderStep: N?
 /**
  * Supplies [Text] for the slider to tell the user what the value is.
  */
-var <N : Number> NumberSetting<N>.spruceUITextGetter: ((Text, N) -> Text)?
-    get() = customProperties["spruceUI_textGetter"] as ((Text, N) -> Text)?
+var <N : Number> NumberSetting<N>.spruceUITextGetter: ((N) -> Text)?
+    get() = customProperties["spruceUI_textGetter"] as ((N) -> Text)?
     set(value) {
         if (value != null) customProperties["spruceUI_textGetter"] = value
         else customProperties.remove("spruceUI_textGetter")

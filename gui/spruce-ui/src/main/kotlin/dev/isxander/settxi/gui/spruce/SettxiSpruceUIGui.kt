@@ -68,7 +68,7 @@ object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
                     { setting.set(it, false) },
                     setting.spruceUITextGetter?.let {
                         { option: SpruceDoubleOption ->
-                            it(option.prefix, option.get())
+                            option.getDisplayText(it(option.get()))
                         }
                     } ?: { it.getDisplayText(Text.literal("${it.get()}")) },
                     setting.description?.let { Text.translatable(it) }
@@ -92,7 +92,7 @@ object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
                     { setting.set(it.toFloat(), false) },
                     setting.spruceUITextGetter?.let {
                         { option: SpruceDoubleOption ->
-                            it(option.prefix, option.get().toFloat())
+                            option.getDisplayText(it(option.get().toFloat()))
                         }
                     } ?: { it.getDisplayText(Text.literal("${it.get()}")) },
                     setting.description?.let { Text.translatable(it) }
@@ -116,7 +116,7 @@ object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
                     { setting.set(it.toInt(), false) },
                     setting.spruceUITextGetter?.let {
                         { option: SpruceDoubleOption ->
-                            it(option.prefix, option.get().toInt())
+                            option.getDisplayText(it(option.get().toInt()))
                         }
                     } ?: { it.getDisplayText(Text.literal("${it.get().toInt()}")) },
                     setting.description?.let { Text.translatable(it) }
