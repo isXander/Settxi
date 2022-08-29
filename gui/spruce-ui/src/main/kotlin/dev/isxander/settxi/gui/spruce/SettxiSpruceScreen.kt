@@ -14,7 +14,13 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 
-class SettxiSpruceScreen internal constructor(title: Text, private val parent: Screen?, private val settxi: SettxiConfig, private val background: Background, private val factory: SettxiSpruceScreen.(SpruceOptionListWidget) -> Unit) : SpruceScreen(title) {
+class SettxiSpruceScreen internal constructor(
+    title: Text,
+    private val parent: Screen?,
+    private val settxi: SettxiConfig,
+    private val background: Background,
+    private val factory: SettxiSpruceScreen.(SpruceOptionListWidget) -> Unit
+) : SpruceScreen(title) {
     private lateinit var optionWidget: SpruceOptionListWidget
 
     override fun init() {
@@ -54,12 +60,14 @@ class SettxiSpruceScreen internal constructor(title: Text, private val parent: S
         addDrawableChild(optionWidget)
 
         addDrawableChild(
-            SpruceSimpleActionOption.reset {
+            SpruceButtonWidget(
+                Position.of(this, width / 2 - 155, height - 29), 150, 20, Text.translatable("gui.cancel")
+            ) {
                 settxi.settings.forEach(Setting<*>::reset)
-                settxi.export()
+                settxi.import()
 
-                init(client, width, height)
-            }.createWidget(Position.of(this, width / 2 - 155, height - 29), 150)
+                client!!.setScreen(parent)
+            }
         )
         addDrawableChild(
             SpruceButtonWidget(
@@ -71,7 +79,11 @@ class SettxiSpruceScreen internal constructor(title: Text, private val parent: S
         )
     }
 
+    fun reinitialize() = init(client, width, height)
+
     override fun renderTitle(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         drawCenteredText(matrices, textRenderer, title, width / 2, 8, 16777215)
     }
+
+    override fun shouldCloseOnEsc() = false
 }
