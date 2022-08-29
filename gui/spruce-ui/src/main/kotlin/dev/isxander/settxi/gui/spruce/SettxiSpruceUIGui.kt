@@ -13,6 +13,7 @@ import java.io.File
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.text.DecimalFormat
 import kotlin.io.path.exists
 
 /**
@@ -32,6 +33,8 @@ fun SettxiConfig.spruceUI(
 
 object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
     init {
+        val decimalFormatter = DecimalFormat("0.00")
+
         registerType<BooleanSetting> { setting ->
             if (setting.spruceUIUseCheckbox)
                 SpruceCheckboxBooleanOption(
@@ -70,7 +73,7 @@ object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
                         { option: SpruceDoubleOption ->
                             option.getDisplayText(it(option.get()))
                         }
-                    } ?: { it.getDisplayText(Text.literal("${it.get()}")) },
+                    } ?: { it.getDisplayText(Text.literal(decimalFormatter.format(it.get()))) },
                     setting.description?.let { Text.translatable(it) }
                 )
         }
@@ -94,7 +97,7 @@ object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
                         { option: SpruceDoubleOption ->
                             option.getDisplayText(it(option.get().toFloat()))
                         }
-                    } ?: { it.getDisplayText(Text.literal("${it.get()}")) },
+                    } ?: { it.getDisplayText(Text.literal(decimalFormatter.format(it.get()))) },
                     setting.description?.let { Text.translatable(it) }
                 )
         }
