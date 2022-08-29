@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "settxi-gui-spruce-ui",
+  "version": "${version}",
+  "name": "Settxi Gui (SpruceUI)",
+  "description": "A GUI helper for Settxi using SpruceUI",
+  "authors": [
+    "isXander"
+  ],
+  "contact": {
+    "homepage": "https://isxander.dev",
+    "issues": "https://github.com/isXander/Settxi/issues",
+    "sources": "https://github.com/isXander/Settxi"
+  },
+  "license": "GPLv3",
+  "environment": "client",
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric-language-kotlin": ">=1.8.2+kotlin.1.7.10",
+    "minecraft": "1.19.x",
+    "java": ">=17",
+    "spruceui": ">=4.0.0+1.19"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ]
+    }
+  }
+}

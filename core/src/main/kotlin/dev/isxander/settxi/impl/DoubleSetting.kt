@@ -21,7 +21,7 @@ import dev.isxander.settxi.serialization.SerializedType
 class DoubleSetting internal constructor(
     default: Double,
     lambda: DoubleSetting.() -> Unit = {},
-) : Setting<Double>(default) {
+) : NumberSetting<Double>(default) {
     override lateinit var name: String
     override lateinit var category: String
     override var description: String? = null

@@ -1,53 +1,63 @@
 package dev.isxander.settxi.serialization
 
 import dev.isxander.settxi.Setting
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 
 /**
  * Gets [kotlinx.serialization] helper functions to
  * serialize and deserialize settings.
  */
-val <T : Setting<*>> List<T>.kotlinx: KotlinxSerializationHelper
-    get() = KotlinxSerializationHelper(this)
+fun kotlinxSerializer(from: Json = Json.Default, jsonBuilder: JsonBuilder.() -> Unit = {}): KotlinxSerializationHelper =
+    KotlinxSerializationHelper(Json(from, jsonBuilder))
 
-class KotlinxSerializationHelper internal constructor(private val settings: List<Setting<*>>) {
+class KotlinxSerializationHelper internal constructor(private val json: Json) : SerializationHelper<JsonObject> {
     /**
      * Exports all settings into a [JsonObject] to be saved.
      */
-    fun asJson(): JsonObject {
-        val settings = mutableMapOf<String, MutableMap<String, SerializedType>>()
-        for (setting in this.settings) {
+    override fun asObject(settings: List<Setting<*>>): JsonObject {
+        val serializedSettings = mutableMapOf<String, MutableMap<String, SerializedType>>()
+        for (setting in settings) {
             try {
                 if (!setting.shouldSave) continue
 
-                val category = settings.computeIfAbsent(setting.categorySerializedKey) { mutableMapOf() }
+                val category = serializedSettings.computeIfAbsent(setting.categorySerializedKey) { mutableMapOf() }
                 category[setting.nameSerializedKey] = setting.serializedValue
             } catch (e: Exception) {
                 SettxiSerializationException("Failed to serialize setting \"${setting.name}\"", e).printStackTrace()
             }
         }
 
-        return JsonObject(settings.mapValues { (_, content) -> JsonObject(content.mapValues { (_, v) -> v.toJsonElement() }) })
+        return JsonObject(serializedSettings.mapValues { (_, content) -> JsonObject(content.mapValues { (_, v) -> v.toJsonElement() }) })
     }
 
     /**
      * Import values from an exported [JsonObject]
      */
-    fun importFromJson(json: JsonObject) {
-        val rootObject = json.toObjectType()
+    override fun importFromObject(obj: JsonObject, settings: List<Setting<*>>): Boolean {
+        val rootObject = obj.toObjectType()
+        var shouldSave = false
         for (setting in settings) {
             try {
                 if (!setting.shouldSave) continue
 
                 val category = rootObject[setting.categorySerializedKey]?.`object`
                 setting.setSerialized(
-                    category?.get(setting.nameSerializedKey) ?: setting.defaultSerializedValue(rootObject, category)
+                    category?.get(setting.nameSerializedKey) ?: setting.defaultSerializedValue(rootObject, category).also { shouldSave = true }
                 )
             } catch (e: Exception) {
                 SettxiSerializationException("Failed to import setting \"${setting.name}\"", e).printStackTrace()
             }
         }
+        return !shouldSave
     }
+
+    override fun asBytes(settings: List<Setting<*>>): ByteArray =
+        json.encodeToString(asObject(settings)).encodeToByteArray()
+
+    override fun importFromBytes(bytes: ByteArray, settings: List<Setting<*>>): Boolean =
+        importFromObject(json.decodeFromString(bytes.decodeToString()), settings)
 
     companion object {
         fun JsonElement.toSerializedType(): SerializedType =

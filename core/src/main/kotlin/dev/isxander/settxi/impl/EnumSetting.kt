@@ -22,7 +22,7 @@ class EnumSetting<T : Enum<T>>(
     default: T,
     lambda: EnumSetting<T>.() -> Unit = {},
     val enumClass: Class<T>,
-    private val values: Array<T>
+    val values: Array<T>
 ) : Setting<T>(default) {
     override lateinit var name: String
     override lateinit var category: String

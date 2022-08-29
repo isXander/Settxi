@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "settxi-gui-cloth-config-testmod",
+  "id": "settxi-gui-spruce-ui-testmod",
   "version": "1",
-  "name": "Settxi Gui (Cloth Config) Test",
-  "description": "A GUI helper for Settxi using Cloth Config",
+  "name": "Settxi Gui (Spruce UI) Test",
+  "description": "A GUI helper for Settxi using Spruce UI",
   "authors": [
     "isXander"
   ],
@@ -16,7 +16,7 @@
     "modmenu": [
       {
         "adapter": "kotlin",
-        "value": "dev.isxander.settxi.gui.test.SettxiClothTestMod$ModMenuIntegration"
+        "value": "dev.isxander.settxi.gui.test.SettxiSpruceUITestMod$ModMenuIntegration"
       }
     ]
   },
@@ -27,6 +27,6 @@
     "fabric-language-kotlin": ">=1.8.3+kotlin.1.7.10",
     "minecraft": "1.19.x",
     "java": ">=17",
-    "cloth-config": ["7.x.x", "8.x.x"]
+    "spruceui": ">=4.0.0+1.19"
   }
 }

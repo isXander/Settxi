@@ -21,7 +21,7 @@ import dev.isxander.settxi.serialization.SerializedType
 class FloatSetting internal constructor(
     default: Float,
     lambda: FloatSetting.() -> Unit = {},
-) : Setting<Float>(default) {
+) : NumberSetting<Float>(default) {
     override lateinit var name: String
     override lateinit var category: String
     override var description: String? = null

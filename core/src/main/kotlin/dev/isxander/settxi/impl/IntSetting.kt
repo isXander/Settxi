@@ -21,7 +21,7 @@ import dev.isxander.settxi.serialization.SerializedType
 class IntSetting internal constructor(
     default: Int,
     lambda: IntSetting.() -> Unit = {},
-) : Setting<Int>(default) {
+) : NumberSetting<Int>(default) {
     override lateinit var name: String
     override lateinit var category: String
     override var description: String? = null

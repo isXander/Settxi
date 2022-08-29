@@ -1,5 +1,7 @@
 package dev.isxander.settxi.serialization
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonNull
@@ -8,18 +10,17 @@ import com.google.gson.JsonPrimitive
 import dev.isxander.settxi.Setting
 import java.util.stream.Collectors
 
-/**
- * Gets [com.google.gson] helper functions to
- * serialize and deserialize settings.
- */
-val <T : Setting<*>> List<T>.gson: GsonSerializationHelper
-    get() = GsonSerializationHelper(this)
+fun gsonSerializer(gsonBuilder: GsonBuilder.() -> Unit = {}) =
+    gsonSerializer(GsonBuilder().apply(gsonBuilder).create())
 
-class GsonSerializationHelper internal constructor(private val settings: List<Setting<*>>) {
+fun gsonSerializer(gson: Gson) =
+    GsonSerializationHelper(gson)
+
+class GsonSerializationHelper internal constructor(private val gson: Gson) : SerializationHelper<JsonObject> {
     /**
      * Exports all settings into a [JsonObject] to be saved.
      */
-    fun asJson(): JsonObject {
+    override fun asObject(settings: List<Setting<*>>): JsonObject {
         val jsonObject = JsonObject()
         for (setting in settings) {
             try {
@@ -40,22 +41,31 @@ class GsonSerializationHelper internal constructor(private val settings: List<Se
 
     /**
      * Import values from an exported [JsonObject]
+     * @return if all values were present and imported
      */
-    fun importFromJson(json: JsonObject) {
-        val rootObject = json.toObjectType()
+    override fun importFromObject(obj: JsonObject, settings: List<Setting<*>>): Boolean {
+        val rootObject = obj.toObjectType()
+        var shouldSave = false
         for (setting in settings) {
             try {
                 if (!setting.shouldSave) continue
 
                 val category = rootObject[setting.categorySerializedKey]?.`object`
                 setting.setSerialized(
-                    category?.get(setting.nameSerializedKey) ?: setting.defaultSerializedValue(rootObject, category)
+                    category?.get(setting.nameSerializedKey) ?: setting.defaultSerializedValue(rootObject, category).also { shouldSave = true }
                 )
             } catch (e: Exception) {
                 SettxiSerializationException("Failed to import setting \"${setting.name}\"", e).printStackTrace()
             }
         }
+        return !shouldSave
     }
+
+    override fun asBytes(settings: List<Setting<*>>): ByteArray =
+        gson.toJson(asObject(settings)).encodeToByteArray()
+
+    override fun importFromBytes(bytes: ByteArray, settings: List<Setting<*>>): Boolean =
+        importFromObject(gson.toJsonTree(bytes.decodeToString()).asJsonObject, settings)
 
     companion object {
         fun JsonElement.toSerializedType(): SerializedType =

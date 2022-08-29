@@ -1,8 +1,8 @@
-package dev.isxander.settxi.gui
+package dev.isxander.settxi.gui.cloth
 
-import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
-import dev.isxander.settxi.serialization.SettxiConfig
+import dev.isxander.settxi.SettxiConfig
+import dev.isxander.settxi.gui.GuiSettingRegistry
 import me.shedaniel.clothconfig2.api.ConfigBuilder
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder
 import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry
@@ -14,10 +14,13 @@ import java.nio.file.Paths
 import java.util.Optional
 import java.util.function.Supplier
 import kotlin.io.path.notExists
-import kotlin.reflect.KClass
 
 /**
  * Constructs a Cloth Config gui
+ *
+ * @param title GUI Title, displayed at the top of the [Screen]
+ * @param parent [Screen] to open once the Cloth Config screen is closed
+ * @param builder Access the Cloth Config [ConfigBuilder] for custom logic.
  */
 fun SettxiConfig.clothGui(title: Text, parent: Screen? = null, builder: ConfigBuilder.() -> Unit = {}): Screen =
     ConfigBuilder.create().apply {
@@ -36,59 +39,7 @@ fun SettxiConfig.clothGui(title: Text, parent: Screen? = null, builder: ConfigBu
         builder()
     }.build()
 
-var Setting<*>.clothRequireRestart: Boolean
-    get() = customProperties["cloth_requireRestart"] as Boolean? == true
-    set(value) { customProperties["cloth_requireRestart"] = value }
-
-var BooleanSetting.clothYesNoText: ((Boolean) -> Text)?
-    get() = customProperties["cloth_yesNoText"] as ((Boolean) -> Text)?
-    set(value) {
-        if (value != null)
-            customProperties["cloth_yesNoText"] = value
-        else
-            customProperties.remove("cloth_yesNoText")
-    }
-
-var IntSetting.clothTextGetter: ((Int) -> Text)?
-    get() = customProperties["cloth_textGetter"] as ((Int) -> Text)?
-    set(value) {
-        if (value != null) {
-            if (range == null) throw IllegalStateException("`clothTextGetter` only works when `range` is defined")
-            customProperties["cloth_textGetter"] = value
-        } else {
-            customProperties.remove("cloth_textGetter")
-        }
-    }
-
-var LongSetting.clothTextGetter: ((Long) -> Text)?
-    get() = customProperties["cloth_textGetter"] as ((Long) -> Text)?
-    set(value) {
-        if (value != null) {
-            if (range == null) throw IllegalStateException("`clothTextGetter` only works when `range` is defined")
-            customProperties["cloth_textGetter"] = value
-        } else {
-            customProperties.remove("cloth_textGetter")
-        }
-    }
-
-object SettxiClothConfigGui {
-    val settingHandlers = hashMapOf<KClass<out Setting<*>>, ConfigBuilder.(Setting<*>) -> TooltipListEntry<out Any>>()
-
-    @Suppress("unchecked_cast")
-    inline fun <reified T : Setting<*>> registerType(noinline factory: ConfigBuilder.(setting: T) -> TooltipListEntry<out Any>) {
-        settingHandlers[T::class] = factory as ConfigBuilder.(Setting<*>) -> TooltipListEntry<out Any>
-    }
-
-    inline fun <reified T : Setting<*>> buildEntryForSetting(builder: ConfigBuilder, setting: T): TooltipListEntry<out Any> {
-        for ((k, v) in settingHandlers) {
-            if (k.isInstance(setting)) {
-                return v(builder, setting)
-            }
-        }
-
-        throw NullPointerException("Config entry factory not found for ${setting::class.simpleName}")
-    }
-
+object SettxiClothConfigGui : GuiSettingRegistry<ConfigBuilder, TooltipListEntry<out Any>>() {
     init {
         registerType<BooleanSetting> { setting ->
             entryBuilder().startBooleanToggle(Text.translatable(setting.name), setting.get(false)).apply {

@@ -21,7 +21,7 @@ import dev.isxander.settxi.serialization.SerializedType
 class LongSetting internal constructor(
     default: Long,
     lambda: LongSetting.() -> Unit = {},
-) : Setting<Long>(default) {
+) : NumberSetting<Long>(default) {
     override lateinit var name: String
     override lateinit var category: String
     override var description: String? = null

@@ -2,7 +2,7 @@ import com.google.gson.JsonObject
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.enum
-import dev.isxander.settxi.serialization.gson
+import dev.isxander.settxi.serialization.gsonSerializer
 import org.junit.jupiter.api.Assertions.*
 import kotlin.test.Test
 
@@ -25,7 +25,7 @@ internal class SerializationHelperTest {
     fun testSerialize() {
         val settingsSample = SettingsSample()
 
-        val serialized = settingsSample.settings.gson.asJson()
+        val serialized = gsonSerializer().asObject(settingsSample.settings)
 
         val expected = JsonObject()
         val category = JsonObject()
@@ -44,7 +44,7 @@ internal class SerializationHelperTest {
         category.addProperty("enum_setting", SettingsSample.EnumSample.TWO.ordinal)
         modified.add("settings_sample", category)
 
-        settingsSample.settings.gson.importFromJson(modified)
+        gsonSerializer().importFromObject(modified, settingsSample.settings)
 
         assertEquals(settingsSample.enumSetting, SettingsSample.EnumSample.TWO)
     }

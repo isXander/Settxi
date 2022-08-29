@@ -11,7 +11,8 @@ include(":serialization:kotlinx-serialization")
 include(":serialization:gson")
 
 listOf(
-    "cloth-config"
+    "cloth-config",
+    "spruce-ui"
 ).forEach {
     include("gui:$it")
     findProject("gui:$it")?.name = it

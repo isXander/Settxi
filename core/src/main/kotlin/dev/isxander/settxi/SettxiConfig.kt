@@ -1,7 +1,4 @@
-package dev.isxander.settxi.serialization
-
-import dev.isxander.settxi.ConfigProcessor
-import dev.isxander.settxi.Setting
+package dev.isxander.settxi
 
 /**
  * Abstraction layer for serialization over [ConfigProcessor]
