@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "settxi-gui-yacl",
+  "version": "${version}",
+  "name": "Settxi Gui (YetAnotherConfigLib)",
+  "description": "A GUI helper for Settxi using YetAnotherConfigLib",
+  "authors": [
+    "isXander"
+  ],
+  "contact": {
+    "homepage": "https://isxander.dev",
+    "issues": "https://github.com/isXander/Settxi/issues",
+    "sources": "https://github.com/isXander/Settxi"
+  },
+  "license": "GPLv3",
+  "environment": "client",
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric-language-kotlin": ">=1.8.3+kotlin.1.7.10",
+    "minecraft": "1.19.x",
+    "java": ">=17",
+    "yet-another-config-lib": ">=0.1.0"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ]
+    }
+  }
+}

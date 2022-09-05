@@ -155,6 +155,13 @@ object SettxiSpruceUIGui : GuiSettingRegistry<Unit, SpruceOption>() {
                 setting.description?.let { Text.translatable(it) }
             )
         }
+        registerType<SpruceButtonSetting> { setting ->
+            SpruceSimpleActionOption.of(
+                setting.name,
+                { setting.get(false).invoke() },
+                setting.description?.let { Text.translatable(it) }
+            )
+        }
     }
 
     private fun <T : Enum<T>> EnumSetting<T>.toCyclingOption(): SpruceCyclingOption =

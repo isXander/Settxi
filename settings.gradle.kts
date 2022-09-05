@@ -12,7 +12,8 @@ include(":serialization:gson")
 
 listOf(
     "cloth-config",
-    "spruce-ui"
+    "spruce-ui",
+    "yacl"
 ).forEach {
     include("gui:$it")
     findProject("gui:$it")?.name = it

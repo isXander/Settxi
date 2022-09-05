@@ -12,7 +12,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "dev.isxander.settxi"
-    version = "2.9.3"
+    version = "2.10.0"
 
     java {
         withSourcesJar()
