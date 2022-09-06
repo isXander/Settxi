@@ -68,7 +68,7 @@ publishing {
     publications {
         register<MavenPublication>("settxi") {
             groupId = "dev.isxander.settxi"
-            artifactId = "settxi-gui-cloth-config"
+            artifactId = "settxi-gui-yacl"
 
             from(components["java"])
         }
