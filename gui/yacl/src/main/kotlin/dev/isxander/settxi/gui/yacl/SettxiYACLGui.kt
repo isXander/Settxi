@@ -78,7 +78,17 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
 
             Option.createBuilder(Int::class.java).apply {
                 applyGenericSetting(setting)
-                controller { IntegerSliderController(it, setting.range!!.first, setting.range!!.last, setting.yaclSliderInterval!!) }
+                controller {
+                    IntegerSliderController(
+                        it,
+                        setting.range!!.first, setting.range!!.last,
+                        setting.yaclSliderInterval!!
+                    ) { value ->
+                        setting.yaclValueFormatter?.invoke(
+                            value
+                        ) ?: IntegerSliderController.DEFAULT_FORMATTER.apply(value)
+                    }
+                }
             }.build()
         }
         registerType<FloatSetting> { setting ->
@@ -87,7 +97,17 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
 
             Option.createBuilder(Float::class.java).apply {
                 applyGenericSetting(setting)
-                controller { FloatSliderController(it, setting.range!!.start, setting.range!!.endInclusive, setting.yaclSliderInterval!!) }
+                controller {
+                    FloatSliderController(
+                        it,
+                        setting.range!!.start, setting.range!!.endInclusive,
+                        setting.yaclSliderInterval!!
+                    ) { value ->
+                        setting.yaclValueFormatter?.invoke(
+                            value
+                        ) ?: FloatSliderController.DEFAULT_FORMATTER.apply(value)
+                    }
+                }
             }.build()
         }
         registerType<DoubleSetting> { setting ->
@@ -96,7 +116,17 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
 
             Option.createBuilder(Double::class.java).apply {
                 applyGenericSetting(setting)
-                controller { DoubleSliderController(it, setting.range!!.start, setting.range!!.endInclusive, setting.yaclSliderInterval!!) }
+                controller {
+                    DoubleSliderController(
+                        it,
+                        setting.range!!.start, setting.range!!.endInclusive,
+                        setting.yaclSliderInterval!!
+                    ) { value ->
+                        setting.yaclValueFormatter?.invoke(
+                            value
+                        ) ?: DoubleSliderController.DEFAULT_FORMATTER.apply(value)
+                    }
+                }
             }.build()
         }
         registerType<LongSetting> { setting ->
@@ -105,7 +135,17 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
 
             Option.createBuilder(Long::class.java).apply {
                 applyGenericSetting(setting)
-                controller { LongSliderController(it, setting.range!!.first, setting.range!!.last, setting.yaclSliderInterval!!) }
+                controller {
+                    LongSliderController(
+                        it,
+                        setting.range!!.first, setting.range!!.last,
+                        setting.yaclSliderInterval!!
+                    ) { value ->
+                        setting.yaclValueFormatter?.invoke(
+                            value
+                        ) ?: LongSliderController.DEFAULT_FORMATTER.apply(value)
+                    }
+                }
             }.build()
         }
         registerType<EnumSetting<*>> { setting ->
@@ -154,7 +194,7 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
                 if (yaclValueFormatter != null)
                     EnumController(it, yaclValueFormatter)
                 else
-                    EnumController(it)
+                    EnumController(it) { value -> Text.translatable(nameProvider.invoke(value)) }
             }
         }.build()
     }
