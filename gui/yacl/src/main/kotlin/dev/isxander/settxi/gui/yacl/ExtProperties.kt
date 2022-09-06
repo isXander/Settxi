@@ -8,7 +8,7 @@ import net.minecraft.text.Text
 var <T> Setting<T>.yaclValueFormatter: ((T) -> Text)?
     get() = customProperties["yacl_valueFormatter"] as ((T) -> Text)?
     set(value) {
-        if (value != null) customProperties["yocl_valueFormatter"] = value
+        if (value != null) customProperties["yacl_valueFormatter"] = value
         else customProperties.remove("yacl_valueFormatter")
     }
 
