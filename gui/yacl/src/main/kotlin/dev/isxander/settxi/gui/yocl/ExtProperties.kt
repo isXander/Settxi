@@ -27,6 +27,10 @@ var Setting<*>.yaclGroup: Group?
         else customProperties.remove("yacl_group")
     }
 
+var Setting<*>.yaclRequireRestart: Boolean
+    get() = customProperties["yacl_requireRestart"] as Boolean? == true
+    set(value) { customProperties["yacl_requireRestart"] = value }
+
 var BooleanSetting.yaclUseTickBox: Boolean
     get() = customProperties["yacl_useTickBox"] as Boolean? == true
     set(value) { customProperties["yacl_useTickBox"] = value }

@@ -10,10 +10,7 @@ import dev.isxander.yacl.api.Option
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.api.YetAnotherConfigLib
 import dev.isxander.yacl.gui.YACLScreen
-import dev.isxander.yacl.gui.controllers.ActionController
-import dev.isxander.yacl.gui.controllers.BooleanController
-import dev.isxander.yacl.gui.controllers.EnumController
-import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.isxander.yacl.gui.controllers.*
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController
 import dev.isxander.yacl.gui.controllers.slider.FloatSliderController
 import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController
@@ -131,6 +128,12 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
                     controller { opt -> ActionController(opt, setting.yaclButtonText) }
             }.build()
         }
+        registerType<YACLLabelSetting> { setting ->
+            Option.createBuilder(Text::class.java).apply {
+                applyGenericSetting(setting)
+                controller(::LabelController)
+            }.build()
+        }
     }
 
     private fun <T : Any> Option.Builder<T>.applyGenericSetting(setting: Setting<T>) {
@@ -141,6 +144,7 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             { setting.get(false) },
             { setting.set(it, false) }
         )
+        requiresRestart(setting.yaclRequireRestart)
     }
 
     private fun <T : Enum<T>> EnumSetting<T>.toOption(): Option<T> {
