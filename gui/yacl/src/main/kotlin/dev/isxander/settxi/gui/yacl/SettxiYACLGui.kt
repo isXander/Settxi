@@ -1,4 +1,4 @@
-package dev.isxander.settxi.gui.yocl
+package dev.isxander.settxi.gui.yacl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.SettxiConfig

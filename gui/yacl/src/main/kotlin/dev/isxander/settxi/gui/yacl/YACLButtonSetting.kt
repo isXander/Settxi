@@ -1,15 +1,15 @@
-package dev.isxander.settxi.gui.yocl
+package dev.isxander.settxi.gui.yacl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.SerializedType
-import net.minecraft.text.Text
+import dev.isxander.yacl.gui.YACLScreen
 
-class YACLLabelSetting internal constructor(
-    label: Text,
-    lambda: YACLLabelSetting.() -> Unit = {},
-) : Setting<Text>(label) {
+class YACLButtonSetting internal constructor(
+    action: (YACLScreen) -> Unit,
+    lambda: YACLButtonSetting.() -> Unit = {},
+) : Setting<(YACLScreen) -> Unit>(action) {
     override lateinit var name: String
     override lateinit var category: String
     override var description: String? = null
@@ -27,9 +27,9 @@ class YACLLabelSetting internal constructor(
 }
 
 /**
- * Constructs and registers a [YACLLabelSetting]
+ * Constructs and registers a [YACLButtonSetting]
  */
-@JvmName("yaclLabelSetting")
-fun ConfigProcessor.yaclLabel(label: Text, lambda: YACLLabelSetting.() -> Unit): YACLLabelSetting {
-    return YACLLabelSetting(label, lambda).also { settings.add(it) }
+@JvmName("yaclButtonSetting")
+fun ConfigProcessor.yaclButton(action: (YACLScreen) -> Unit, lambda: YACLButtonSetting.() -> Unit): YACLButtonSetting {
+    return YACLButtonSetting(action, lambda).also { settings.add(it) }
 }

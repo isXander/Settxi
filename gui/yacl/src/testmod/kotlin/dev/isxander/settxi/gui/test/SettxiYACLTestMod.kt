@@ -3,7 +3,7 @@ package dev.isxander.settxi.gui.test
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 import dev.isxander.settxi.SettxiConfig
-import dev.isxander.settxi.gui.yocl.*
+import dev.isxander.settxi.gui.yacl.*
 import dev.isxander.settxi.impl.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.toast.SystemToast
