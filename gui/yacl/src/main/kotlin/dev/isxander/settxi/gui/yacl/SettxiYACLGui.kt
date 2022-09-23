@@ -161,7 +161,7 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             ButtonOption.createBuilder().apply {
                 name(Text.translatable(setting.name))
                 setting.description?.let { tooltip(Text.translatable(it)) }
-                action { setting.get(false).invoke(it) }
+                action { screen, _ -> setting.get(false).invoke(screen) }
                 if (setting.yaclButtonText == null)
                     controller(::ActionController)
                 else
@@ -176,7 +176,7 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
         }
     }
 
-    private fun <T : Any> Option.Builder<T>.applyGenericSetting(setting: Setting<T>) {
+    fun <T : Any> Option.Builder<T>.applyGenericSetting(setting: Setting<T>) {
         name(Text.translatable(setting.name))
         setting.description?.let { tooltip(Text.translatable(it)) }
         binding(
@@ -184,7 +184,9 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             { setting.get(false) },
             { setting.set(it, false) }
         )
-        requiresRestart(setting.yaclRequireRestart)
+        flags(setting.yaclFlags)
+        instant(setting.yaclInstant)
+        available(setting.yaclAvailable)
     }
 
     private fun <T : Enum<T>> EnumSetting<T>.toOption(): Option<T> {

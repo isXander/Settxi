@@ -10,7 +10,7 @@ class YACLLabelSetting internal constructor(
     label: Text,
     lambda: YACLLabelSetting.() -> Unit = {},
 ) : Setting<Text>(label) {
-    override lateinit var name: String
+    override var name: String = ""
     override lateinit var category: String
     override var description: String? = null
     override val shouldSave: Boolean = false

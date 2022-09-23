@@ -37,7 +37,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:1.8.3+kotlin.1.7.10")
 
     api(project(":gui"))
-    modImplementation("dev.isxander:yet-another-config-lib:0.1.2")
+    modImplementation("dev.isxander:yet-another-config-lib:1.4.3")
 
     "testmodImplementation"(sourceSets.main.get().output)
     "modTestmodImplementation"("com.terraformersmc:modmenu:4.0.6")

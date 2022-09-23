@@ -3,6 +3,7 @@ package dev.isxander.settxi.gui.yacl
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.BooleanSetting
 import dev.isxander.settxi.impl.NumberSetting
+import dev.isxander.yacl.api.OptionFlag
 import net.minecraft.text.Text
 
 var <T> Setting<T>.yaclValueFormatter: ((T) -> Text)?
@@ -27,9 +28,27 @@ var Setting<*>.yaclGroup: Group?
         else customProperties.remove("yacl_group")
     }
 
+var Setting<*>.yaclFlags: Set<OptionFlag>
+    get() = customProperties["yacl_flags"] as Set<OptionFlag>? ?: emptySet()
+    set(value) { customProperties["yacl_flags"] = value }
+
+var Setting<*>.yaclInstant: Boolean
+    get() = customProperties["yacl_instant"] as Boolean? == true
+    set(value) { customProperties["yacl_instant"] = value }
+
+@Deprecated("Replaced with YACL's flags")
 var Setting<*>.yaclRequireRestart: Boolean
-    get() = customProperties["yacl_requireRestart"] as Boolean? == true
-    set(value) { customProperties["yacl_requireRestart"] = value }
+    get() = yaclFlags.contains(OptionFlag.GAME_RESTART)
+    set(value) {
+        yaclFlags = if (value)
+            yaclFlags + OptionFlag.GAME_RESTART
+        else
+            yaclFlags - OptionFlag.GAME_RESTART
+    }
+
+var Setting<*>.yaclAvailable: Boolean
+    get() = customProperties["yacl_available"] as Boolean? ?: true
+    set(value) { customProperties["yacl_available"] = value }
 
 var BooleanSetting.yaclUseTickBox: Boolean
     get() = customProperties["yacl_useTickBox"] as Boolean? == true
