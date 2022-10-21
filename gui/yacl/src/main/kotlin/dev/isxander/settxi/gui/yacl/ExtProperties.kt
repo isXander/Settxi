@@ -2,6 +2,7 @@ package dev.isxander.settxi.gui.yacl
 
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.BooleanSetting
+import dev.isxander.settxi.impl.EnumSetting
 import dev.isxander.settxi.impl.NumberSetting
 import dev.isxander.yacl.api.OptionFlag
 import net.minecraft.text.Text
@@ -21,8 +22,8 @@ var Setting<*>.yaclCategoryTooltipStr: String
     get() = yaclCategoryTooltip.string
     set(value) { yaclCategoryTooltip = Text.of(value) }
 
-var Setting<*>.yaclGroup: Group?
-    get() = customProperties["yacl_group"] as Group?
+var Setting<*>.yaclGroup: YaclGroup?
+    get() = customProperties["yacl_group"] as YaclGroup?
     set(value) {
         if (value != null) customProperties["yacl_group"] = value
         else customProperties.remove("yacl_group")
@@ -75,4 +76,10 @@ var YACLButtonSetting.yaclButtonText: Text?
         else customProperties.remove("yacl_buttonText")
     }
 
-data class Group(val name: Text, val tooltip: Text = Text.empty(), val collapsed: Boolean = false)
+var <T : Enum<T>> EnumSetting<T>.yaclAvailableConstants: Set<T>
+    get() = customProperties["yacl_enumAvailableConsts"] as Set<T>? ?: emptySet()
+    set(value) { customProperties["yacl_enumAvailableConsts"] = value }
+
+data class YaclGroup(val name: Text, val tooltip: Text = Text.empty(), val collapsed: Boolean = false)
+@Deprecated(message = "Name changed!", ReplaceWith("YaclGroup"))
+typealias Group = YaclGroup

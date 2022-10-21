@@ -20,7 +20,7 @@ object SettxiYACLTestMod {
         override fun import() = println("Settxi YACL: Fake Importing")
         override fun export() = println("Settxi YACL: Fake Exporting")
 
-        private val booleanGroup = Group(Text.of("Booleans"))
+        private val booleanGroup = YaclGroup(Text.of("Booleans"))
 
         var testBool by boolean(true) {
             name = "Test Boolean"
@@ -43,7 +43,7 @@ object SettxiYACLTestMod {
             category = "Primitives"
         }
 
-        private val floatingPointGroup = Group(Text.of("Floating Point"))
+        private val floatingPointGroup = YaclGroup(Text.of("Floating Point"))
 
         var testDouble by double(0.5) {
             name = "Test Double"
@@ -61,7 +61,7 @@ object SettxiYACLTestMod {
             yaclSliderInterval = 0.05f
         }
 
-        private val integerPointGroup = Group(Text.of("Integer Point"))
+        private val integerPointGroup = YaclGroup(Text.of("Integer Point"))
 
         var testInt by int(50) {
             name = "Test Int"

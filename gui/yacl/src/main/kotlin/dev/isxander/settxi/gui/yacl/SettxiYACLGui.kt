@@ -9,8 +9,8 @@ import dev.isxander.yacl.api.ConfigCategory
 import dev.isxander.yacl.api.Option
 import dev.isxander.yacl.api.OptionGroup
 import dev.isxander.yacl.api.YetAnotherConfigLib
-import dev.isxander.yacl.gui.YACLScreen
 import dev.isxander.yacl.gui.controllers.*
+import dev.isxander.yacl.gui.controllers.cycling.EnumController
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController
 import dev.isxander.yacl.gui.controllers.slider.FloatSliderController
 import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController
@@ -19,13 +19,12 @@ import dev.isxander.yacl.gui.controllers.string.StringController
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
-fun SettxiConfig.yetAnotherConfigLib(title: Text, parent: Screen?, initConsumer: (YACLScreen) -> Unit = {}): Screen =
+fun SettxiConfig.yetAnotherConfigLib(title: Text, parent: Screen?, block: YetAnotherConfigLib.Builder.() -> Unit = {}): Screen =
     YetAnotherConfigLib.createBuilder().apply {
         title(title)
         save { export() }
-        screenInit(initConsumer)
 
-        val builders = mutableMapOf<String, Pair<ConfigCategory.Builder, MutableMap<Group, OptionGroup.Builder>>>()
+        val builders = mutableMapOf<String, Pair<ConfigCategory.Builder, MutableMap<YaclGroup, OptionGroup.Builder>>>()
         for (setting in settings) {
             val builder = builders.getOrPut(setting.category) {
                 ConfigCategory.createBuilder()
@@ -52,7 +51,10 @@ fun SettxiConfig.yetAnotherConfigLib(title: Text, parent: Screen?, initConsumer:
             if (groups.isNotEmpty()) builder.value.first.groups(groups)
             builder.value.first.build()
         })
-    }.build().generateScreen(parent)
+    }
+        .apply(block)
+        .build()
+        .generateScreen(parent)
 
 object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
     init {
@@ -189,14 +191,14 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
         available(setting.yaclAvailable)
     }
 
-    private fun <T : Enum<T>> EnumSetting<T>.toOption(): Option<T> {
+    private inline fun <reified T : Enum<T>> EnumSetting<T>.toOption(): Option<T> {
         return Option.createBuilder(enumClass).apply {
             applyGenericSetting(this@toOption)
             controller {
                 if (yaclValueFormatter != null)
-                    EnumController(it, yaclValueFormatter)
+                    EnumController(it, yaclValueFormatter, yaclAvailableConstants.toTypedArray())
                 else
-                    EnumController(it) { value -> Text.translatable(nameProvider.invoke(value)) }
+                    EnumController(it, { value -> Text.translatable(nameProvider.invoke(value)) }, enumValues())
             }
         }.build()
     }

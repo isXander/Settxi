@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // Build
-    kotlin("jvm") version "1.7.10" apply false
+    kotlin("jvm") version "1.7.20" apply false
     `java-library`
 }
 
@@ -12,7 +12,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "dev.isxander.settxi"
-    version = "2.10.3"
+    version = "2.10.4"
 
     java {
         withSourcesJar()

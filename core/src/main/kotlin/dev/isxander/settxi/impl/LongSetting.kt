@@ -1,6 +1,5 @@
 package dev.isxander.settxi.impl
 
-import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.PrimitiveType
