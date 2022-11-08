@@ -196,9 +196,9 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             applyGenericSetting(this@toOption)
             controller {
                 if (yaclValueFormatter != null)
-                    EnumController(it, yaclValueFormatter, yaclAvailableConstants.toTypedArray())
+                    EnumController(it, yaclValueFormatter, yaclAvailableConstants?.toTypedArray() ?: enumClass.enumConstants)
                 else
-                    EnumController(it, { value -> Text.translatable(nameProvider.invoke(value)) }, enumValues())
+                    EnumController(it, { value -> Text.translatable(nameProvider.invoke(value)) }, yaclAvailableConstants?.toTypedArray() ?: enumClass.enumConstants)
             }
         }.build()
     }

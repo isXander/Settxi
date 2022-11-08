@@ -76,9 +76,9 @@ var YACLButtonSetting.yaclButtonText: Text?
         else customProperties.remove("yacl_buttonText")
     }
 
-var <T : Enum<T>> EnumSetting<T>.yaclAvailableConstants: Set<T>
-    get() = customProperties["yacl_enumAvailableConsts"] as Set<T>? ?: emptySet()
-    set(value) { customProperties["yacl_enumAvailableConsts"] = value }
+inline var <reified T : Enum<T>> EnumSetting<T>.yaclAvailableConstants: Set<T>?
+    get() = customProperties["yacl_enumAvailableConsts"] as Set<T>?
+    set(value) { customProperties["yacl_enumAvailableConsts"] = value!! }
 
 data class YaclGroup(val name: Text, val tooltip: Text = Text.empty(), val collapsed: Boolean = false)
 @Deprecated(message = "Name changed!", ReplaceWith("YaclGroup"))
