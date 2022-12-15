@@ -27,7 +27,7 @@ loom {
     createRemapConfigurations(testmod.get())
 }
 
-val minecraftVersion = "1.19.2"
+val minecraftVersion = "1.19.3"
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -37,10 +37,10 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:1.8.4+kotlin.1.7.20")
 
     api(project(":gui"))
-    modImplementation("dev.isxander:yet-another-config-lib:1.6.0")
+    modImplementation("dev.isxander:yet-another-config-lib:2.1.1")
 
     "testmodImplementation"(sourceSets.main.get().output)
-    "modTestmodImplementation"("com.terraformersmc:modmenu:4.0.6")
+    "modTestmodImplementation"("com.terraformersmc:modmenu:5.0.0")
 }
 
 tasks {
