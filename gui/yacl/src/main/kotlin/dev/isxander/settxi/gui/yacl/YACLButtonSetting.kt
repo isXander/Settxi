@@ -4,7 +4,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.ConfigProcessor
 import dev.isxander.settxi.serialization.ObjectType
 import dev.isxander.settxi.serialization.SerializedType
-import dev.isxander.yacl.gui.YACLScreen
+import dev.isxander.yacl3.gui.YACLScreen
 
 class YACLButtonSetting internal constructor(
     action: (YACLScreen) -> Unit,

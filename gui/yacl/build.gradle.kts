@@ -1,5 +1,5 @@
 plugins {
-    id("fabric-loom") version "1.0.+"
+    id("fabric-loom") version "1.2.+"
 }
 
 repositories {
@@ -27,20 +27,20 @@ loom {
     createRemapConfigurations(testmod.get())
 }
 
-val minecraftVersion = "1.19.3"
+val minecraftVersion = "1.20"
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:$minecraftVersion+build.+:v2")
 
     modImplementation("net.fabricmc:fabric-loader:0.14.+")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.4+kotlin.1.7.20")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.9.4+kotlin.1.8.21")
 
     api(project(":gui"))
-    modImplementation("dev.isxander:yet-another-config-lib:2.1.1")
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.0.0+1.20")
 
     "testmodImplementation"(sourceSets.main.get().output)
-    "modTestmodImplementation"("com.terraformersmc:modmenu:5.0.0")
+    "modTestmodImplementation"("com.terraformersmc:modmenu:7.0.0")
 }
 
 tasks {

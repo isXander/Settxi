@@ -4,7 +4,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.BooleanSetting
 import dev.isxander.settxi.impl.EnumSetting
 import dev.isxander.settxi.impl.NumberSetting
-import dev.isxander.yacl.api.OptionFlag
+import dev.isxander.yacl3.api.OptionFlag
 import net.minecraft.text.Text
 
 var <T> Setting<T>.yaclValueFormatter: ((T) -> Text)?

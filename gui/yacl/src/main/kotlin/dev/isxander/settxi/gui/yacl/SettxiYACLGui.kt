@@ -4,18 +4,23 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.SettxiConfig
 import dev.isxander.settxi.gui.GuiSettingRegistry
 import dev.isxander.settxi.impl.*
-import dev.isxander.yacl.api.ButtonOption
-import dev.isxander.yacl.api.ConfigCategory
-import dev.isxander.yacl.api.Option
-import dev.isxander.yacl.api.OptionGroup
-import dev.isxander.yacl.api.YetAnotherConfigLib
-import dev.isxander.yacl.gui.controllers.*
-import dev.isxander.yacl.gui.controllers.cycling.EnumController
-import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController
-import dev.isxander.yacl.gui.controllers.slider.FloatSliderController
-import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController
-import dev.isxander.yacl.gui.controllers.slider.LongSliderController
-import dev.isxander.yacl.gui.controllers.string.StringController
+import dev.isxander.yacl3.api.*
+import dev.isxander.yacl3.api.controller.BooleanControllerBuilder
+import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder
+import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder
+import dev.isxander.yacl3.api.controller.LongSliderControllerBuilder
+import dev.isxander.yacl3.api.controller.StringControllerBuilder
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
+import dev.isxander.yacl3.gui.controllers.*
+import dev.isxander.yacl3.gui.controllers.cycling.EnumController
+import dev.isxander.yacl3.gui.controllers.slider.DoubleSliderController
+import dev.isxander.yacl3.gui.controllers.slider.FloatSliderController
+import dev.isxander.yacl3.gui.controllers.slider.IntegerSliderController
+import dev.isxander.yacl3.gui.controllers.slider.LongSliderController
+import dev.isxander.yacl3.gui.controllers.string.StringController
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
@@ -38,7 +43,7 @@ fun SettxiConfig.yetAnotherConfigLib(title: Text, parent: Screen?, block: YetAno
                 builder.second.getOrPut(group) {
                     OptionGroup.createBuilder()
                         .name(group.name)
-                        .tooltip(group.tooltip)
+                        .description(OptionDescription.of(group.tooltip))
                         .collapsed(group.collapsed)
                 }.option(option)
             } else {
@@ -59,18 +64,16 @@ fun SettxiConfig.yetAnotherConfigLib(title: Text, parent: Screen?, block: YetAno
 object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
     init {
         registerType<BooleanSetting> { setting ->
-            Option.createBuilder(Boolean::class.java).apply {
+            Option.createBuilder<Boolean>().apply {
                 applyGenericSetting(setting)
-                controller {
+                controller { opt ->
                     if (setting.yaclUseTickBox)
-                        TickBoxController(it)
+                        TickBoxControllerBuilder.create(opt)
                     else
-                        BooleanController(
-                            it,
-                            setting.yaclValueFormatter
-                                ?: { value -> BooleanController.ON_OFF_FORMATTER.apply(value) },
-                            setting.yaclColouredText
-                        )
+                        BooleanControllerBuilder.create(opt).apply {
+                            setting.yaclValueFormatter?.let { valueFormatter(it) } ?: onOffFormatter()
+                            coloured(setting.yaclColouredText)
+                        }
                 }
             }.build()
         }
@@ -78,17 +81,13 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             setting.range ?: error("YetAnotherConfigLib requires `range` to be defined.")
             setting.yaclSliderInterval ?: error("YetAnotherConfigLib requires `yoclSliderInterval` to be defined")
 
-            Option.createBuilder(Int::class.java).apply {
+            Option.createBuilder<Int>().apply {
                 applyGenericSetting(setting)
-                controller {
-                    IntegerSliderController(
-                        it,
-                        setting.range!!.first, setting.range!!.last,
-                        setting.yaclSliderInterval!!
-                    ) { value ->
-                        setting.yaclValueFormatter?.invoke(
-                            value
-                        ) ?: IntegerSliderController.DEFAULT_FORMATTER.apply(value)
+                controller { opt ->
+                    IntegerSliderControllerBuilder.create(opt).apply {
+                        range(setting.range!!.first, setting.range!!.last)
+                        step(setting.yaclSliderInterval!!)
+                        setting.yaclValueFormatter?.let { valueFormatter(it) }
                     }
                 }
             }.build()
@@ -97,17 +96,13 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             setting.range ?: error("YetAnotherConfigLib requires `range` to be defined.")
             setting.yaclSliderInterval ?: error("YetAnotherConfigLib requires `yoclSliderInterval` to be defined")
 
-            Option.createBuilder(Float::class.java).apply {
+            Option.createBuilder<Float>().apply {
                 applyGenericSetting(setting)
-                controller {
-                    FloatSliderController(
-                        it,
-                        setting.range!!.start, setting.range!!.endInclusive,
-                        setting.yaclSliderInterval!!
-                    ) { value ->
-                        setting.yaclValueFormatter?.invoke(
-                            value
-                        ) ?: FloatSliderController.DEFAULT_FORMATTER.apply(value)
+                controller { opt ->
+                    FloatSliderControllerBuilder.create(opt).apply {
+                        range(setting.range!!.start, setting.range!!.endInclusive)
+                        step(setting.yaclSliderInterval!!)
+                        setting.yaclValueFormatter?.let { valueFormatter(it) }
                     }
                 }
             }.build()
@@ -116,17 +111,13 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             setting.range ?: error("YetAnotherConfigLib requires `range` to be defined.")
             setting.yaclSliderInterval ?: error("YetAnotherConfigLib requires `yoclSliderInterval` to be defined")
 
-            Option.createBuilder(Double::class.java).apply {
+            Option.createBuilder<Double>().apply {
                 applyGenericSetting(setting)
-                controller {
-                    DoubleSliderController(
-                        it,
-                        setting.range!!.start, setting.range!!.endInclusive,
-                        setting.yaclSliderInterval!!
-                    ) { value ->
-                        setting.yaclValueFormatter?.invoke(
-                            value
-                        ) ?: DoubleSliderController.DEFAULT_FORMATTER.apply(value)
+                controller { opt ->
+                    DoubleSliderControllerBuilder.create(opt).apply {
+                        range(setting.range!!.start, setting.range!!.endInclusive)
+                        step(setting.yaclSliderInterval!!)
+                        setting.yaclValueFormatter?.let { valueFormatter(it) }
                     }
                 }
             }.build()
@@ -135,17 +126,13 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             setting.range ?: error("YetAnotherConfigLib requires `range` to be defined.")
             setting.yaclSliderInterval ?: error("YetAnotherConfigLib requires `yoclSliderInterval` to be defined")
 
-            Option.createBuilder(Long::class.java).apply {
+            Option.createBuilder<Long>().apply {
                 applyGenericSetting(setting)
-                controller {
-                    LongSliderController(
-                        it,
-                        setting.range!!.first, setting.range!!.last,
-                        setting.yaclSliderInterval!!
-                    ) { value ->
-                        setting.yaclValueFormatter?.invoke(
-                            value
-                        ) ?: LongSliderController.DEFAULT_FORMATTER.apply(value)
+                controller { opt ->
+                    LongSliderControllerBuilder.create(opt).apply {
+                        range(setting.range!!.first, setting.range!!.last)
+                        step(setting.yaclSliderInterval!!)
+                        setting.yaclValueFormatter?.let { valueFormatter(it) }
                     }
                 }
             }.build()
@@ -154,33 +141,26 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
             setting.toOption()
         }
         registerType<StringSetting> { setting ->
-            Option.createBuilder(String::class.java).apply {
+            Option.createBuilder<String>().apply {
                 applyGenericSetting(setting)
-                controller(::StringController)
+                controller(StringControllerBuilder::create)
             }.build()
         }
         registerType<YACLButtonSetting> { setting ->
             ButtonOption.createBuilder().apply {
                 name(Text.translatable(setting.name))
-                setting.description?.let { tooltip(Text.translatable(it)) }
+                setting.description?.let { description(OptionDescription.of(Text.translatable(it))) }
                 action { screen, _ -> setting.get(false).invoke(screen) }
-                if (setting.yaclButtonText == null)
-                    controller(::ActionController)
-                else
-                    controller { opt -> ActionController(opt, setting.yaclButtonText) }
             }.build()
         }
         registerType<YACLLabelSetting> { setting ->
-            Option.createBuilder(Text::class.java).apply {
-                applyGenericSetting(setting)
-                controller(::LabelController)
-            }.build()
+            LabelOption.create(setting.get())
         }
     }
 
     fun <T : Any> Option.Builder<T>.applyGenericSetting(setting: Setting<T>) {
         name(Text.translatable(setting.name))
-        setting.description?.let { tooltip(Text.translatable(it)) }
+        setting.description?.let { description(OptionDescription.of(Text.translatable(it))) }
         binding(
             setting.default,
             { setting.get(false) },
@@ -192,13 +172,20 @@ object SettxiYACLGui : GuiSettingRegistry<Unit, Option<*>>() {
     }
 
     private inline fun <reified T : Enum<T>> EnumSetting<T>.toOption(): Option<T> {
-        return Option.createBuilder(enumClass).apply {
+        return Option.createBuilder<T>().apply {
             applyGenericSetting(this@toOption)
-            controller {
-                if (yaclValueFormatter != null)
-                    EnumController(it, yaclValueFormatter, yaclAvailableConstants?.toTypedArray() ?: enumClass.enumConstants)
-                else
-                    EnumController(it, { value -> Text.translatable(nameProvider.invoke(value)) }, yaclAvailableConstants?.toTypedArray() ?: enumClass.enumConstants)
+            controller { opt ->
+                if (yaclAvailableConstants != null) {
+                    CyclingListControllerBuilder.create(opt).apply {
+                        values(yaclAvailableConstants ?: enumClass.enumConstants.toList())
+                        yaclValueFormatter?.let { valueFormatter(it) }
+                    }
+                } else {
+                    EnumControllerBuilder.create(opt).apply {
+                        enumClass(enumClass)
+                        yaclValueFormatter?.let { valueFormatter(it) }
+                    }
+                }
             }
         }.build()
     }
